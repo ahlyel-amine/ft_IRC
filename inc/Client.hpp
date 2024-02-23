@@ -83,8 +83,13 @@ class Client {
 			cout << vc[0] << endl;
 			return true;
 		}
-		void sendClientMsg(string&, vector<string>&);
-		void sendChannelMsg(string&, vector<string>&);
+		/****************************/
+        /*        [Client Action Utils]       */
+		void	sendClientMsg(string&, vector<string>&);
+		void	sendChannelMsg(string&, vector<string>&);
+		bool	setNewTopic(vector<string>& cmd);
+		bool	listChannelTopic(vector<string>& cmd);
+		bool	noEnParam(vector<string>& cmd);
 		/****************************/
 		/*      [DebugActions]     */
 		bool		   infoChannel(vector<string>);
@@ -95,3 +100,4 @@ void	SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const &M
 void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
 void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
 vector<string> getTargets(string, char);
+typedef bool (Client::*topControl[])(vector<string>& cmd);
