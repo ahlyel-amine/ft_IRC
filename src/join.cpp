@@ -17,13 +17,7 @@ static bool is_channel(string channel)
     }
     return (true);
 }
-// void    ErrorMsgGenrator(string const &Prefix, string const &Sufix, Client &Sender) {
-    // string msg = Prefix + ((Sender.getNckName().empty()) ? "*" : Sender.getNckName())
-                // + Sufix + "\r\n";
-// 
-    // if (send(Sender.getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-        // Server::getInstance()->RemoveClient(Sender.getClntFd());
-// }
+
 static void    joinParser(vector<string> join, queue<string> &channels, queue<string> &passwords, Client &client)
 {
     join.erase(join.begin());
@@ -49,19 +43,108 @@ static void    joinParser(vector<string> join, queue<string> &channels, queue<st
         passwords.push(password);
     }
 }
-string listMembers(Channel &ch) {
+
+static string listMembers(Channel &ch)
+{
     string str;
+
     vector<Client *> Mbrs = ch.getMembers();
+
     for (size_t i = 0; i < Mbrs.size(); i++)
-        str += ((ch.isOperator(Mbrs[i])) ? "@" : "") + Mbrs[i]->getNckName() + ((i+1!=Mbrs.size()) ? " " : ""); 
+    {
+        str += ((ch.isOperator(Mbrs[i])) ? "@" : "") + Mbrs[i]->getNckName() + ((i + 1 != Mbrs.size()) ? " " : ""); 
+    }
     return str;
+}
+
+static void    initiateChannel(map<string, Channel*> &Channels, queue<string>& const channels, vector<string> join, string const &channel, Client* const client)
+{
+    if (!Channels.count(channel))
+    {
+        Channel *chnl = new Channel(client, channels.front());
+
+        Channels[channels.front()] = chnl;
+        cout << "channel created" << Channels[channels.front()]->getName() << " : " << channels.front() << endl;
+        SendMsg(*client, *client, join[0], "", channels.front());
+        ErrorMsgGenrator(":ircserv 353 ", " = " + channels.front() + " :@"+client->getNckName(), *client);
+        ErrorMsgGenrator(":ircserv 366 ", " " + channels.front() + " :End of /NAMES list.", *client);
+    }
+}
+
+static bool    lockControll(queue<string>& channels, queue<string>& passwords, Channel* const channel, Client& client)
+{
+    if (channel->isLocked())
+    {
+        if (passwords.empty() || (channel->getPassword() != passwords.front()))
+        {
+            ErrorMsgGenrator(":IRCserv.1337.ma 475 ", " " + channels.front() + " :Cannot join channel (+k) - bad key", client);
+            channels.pop();
+            return (true);
+        }
+        else
+        {
+            passwords.pop();
+        }
+    }
+    return (false);
+}
+
+static bool    limitControll(queue<string>& channels, Channel* const channel, Client& client)
+{
+    if (channel->isLimited())
+    {
+        if (channel->getLimit() <= channel->getMembers().size())
+        {
+            ErrorMsgGenrator(":IRCserv.1337.ma 471 ", " " + channels.front() + " :Cannot join channel (+l) - channel is full", client);
+            channels.pop();
+            return (true);
+        }
+    }
+    return (false);
+}
+
+static bool    isMemberControll(queue<string>& channels, Channel* const channel, Client* const client)
+{
+    if (channel->isMember(client))
+    {
+        ErrorMsgGenrator(":IRCserv.1337.ma 443 ", " " + channels.front() + " :You are already on that channel", *client);
+        channels.pop();
+        return (true);
+    }
+    return (false);
+}
+
+static bool    inviteOnlyControll(queue<string>& channels, Channel* const channel, Client* const client)
+{
+    if (channel->isInviteOnly())
+    {
+        if (!channel->isInvited(client))
+        {
+            ErrorMsgGenrator(":IRCserv.1337.ma 473 ", " " + channels.front() + " :Cannot join channel (+i) - You must be invited", *client);
+            channels.pop();
+            return (true);
+        }
+        else
+        {
+            channel->removeInvited(client);
+        }
+    }
+    return (false);
+}
+
+static void    joinChannel(Channel* const channel, Client* const client, vector<string> join, queue<string>& channels)
+{
+    channel->addMember(client);
+    client->setChannel(channels.front());
+    SendMsg(*client, *channel, join[0], "", channels.front());
+    ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :"+listMembers(*channel), *client);
+    ErrorMsgGenrator(":IRCserv.1337.ma 366 ", " " + channels.front() + " :End of /NAMES list.", *client);
 }
 
 bool    Client::joinCommand(vector<string> join)
 {
     queue<string>   channels;
     queue<string>   passwords;
-    string          msg;
 
     if (!this->Regestred)
     {
@@ -76,91 +159,35 @@ bool    Client::joinCommand(vector<string> join)
         map<string, Channel*>                &Channels =  Server::getInstance()->getChannels();
         map<string, Channel*>::iterator      search   =  Channels.find(channels.front());
 
-
-        if (channels.front().size() == 1 && channels.front()[0] == '0')
-        {
-            for (size_t i = 0; i < this->Chnls.size(); i++)
-            {
-                SendMsg(*this, *Channels[this->Chnls[i]], "PART", "", this->Chnls[i]);
-                Channels[this->Chnls[i]]->removeMember(this);
-                Channels[this->Chnls[i]]->removeOperator(this);
-                Channels[this->Chnls[i]]->removeInvited(this);
-            }
-            this->Chnls.clear();
-            channels.pop();
-            msg = "";
-            continue;
-        }
         if (!Channels.count(channels.front()))
         {
-            Channel *chnl = new Channel(this, channels.front());
-
-            Channels[channels.front()] = chnl;
-            cout << "channel created" << Channels[channels.front()]->getName() << " : " << channels.front() << endl;
-            SendMsg(*this, *this, join[0], "", channels.front());
-            ErrorMsgGenrator(":ircserv 353 ", " = " + channels.front() + " :@"+this->NckName, *this);
-            ErrorMsgGenrator(":ircserv 366 ", " " + channels.front() + " :End of /NAMES list.", *this);
-            // ErrorMsgGenrator(":irc_server 471 ", " " + channels.front() + " :Channel created successfully", *this);
-            // msg += ":" + this->NckName+ "!" + this->UsrName + "@" + this->HstName + " JOIN " + channels.front() + "\r\n";
-            // msg += ":IRC_SERVER 353 " + this->NckName + " = " + channels.front() + " :@"+this->NckName+"\r\n";
-            // msg += ":IRC_SERVER 366 " + this->NckName + " " + channels.front() + " ::End of /NAMES list\r\n";
+            initiateChannel(Channels, channels, join, channels.front(), this);
         }
         else
         {
-
-            if (search->second->isLocked())
+            if (lockControll(channels, passwords, search->second, *this))
             {
-                if (passwords.empty() || (search->second->getPassword() != passwords.front()))
-                {
-                    ErrorMsgGenrator(":IRCserv.1337.ma 475 ", " " + channels.front() + " :Cannot join channel (+k) - bad key", *this);
-                    channels.pop();
-                    continue;
-                }
-                else {
-                    passwords.pop();
-                }
-            }
-
-            if (search->second->isLimited())
-            {
-                if (search->second->getLimit() <= search->second->getMembers().size())
-                {
-                    ErrorMsgGenrator(":IRCserv.1337.ma 471 ", " " + channels.front() + " :Cannot join channel (+l) - channel is full", *this);
-                    channels.pop();
-                    continue;
-                }
-            }
-
-            if (search->second->isMember(this))
-            {
-                ErrorMsgGenrator(":IRCserv.1337.ma 443 ", " " + channels.front() + " :You are already on that channel", *this);
-                channels.pop();
                 continue;
             }
 
-            if (search->second->isInviteOnly())
+            if (limitControll(channels, search->second, *this))
             {
-                if (!search->second->isInvited(this))
-                {
-                    ErrorMsgGenrator(":IRCserv.1337.ma 473 ", " " + channels.front() + " :Cannot join channel (+i) - You must be invited", *this);
-                    // msg += "473  JOIN :Cannot join channel (+i)\r\n";
-                    channels.pop();
-                    continue;
-                }
-                else
-                {
-                    search->second->removeInvited(this);
-                }
+                continue;
             }
 
-            search->second->addMember(this);
-            this->Chnls.push_back(channels.front());
-            SendMsg(*this, *search->second, join[0], "", channels.front());
-            ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :"+listMembers(*search->second), *this);
-            ErrorMsgGenrator(":IRCserv.1337.ma 366 ", " " + channels.front() + " :End of /NAMES list.", *this);
+            if (isMemberControll(channels, search->second, this))
+            {
+                continue;
+            }
+
+            if (inviteOnlyControll(channels, search->second, this))
+            {
+                continue;
+            }
+
+            joinChannel(search->second, this, join, channels);
         }
         channels.pop();
     }
-    send(this->ClntFd, msg.c_str(), msg.size(), 0);
     return (true);
 }
