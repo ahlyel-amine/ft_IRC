@@ -11,7 +11,7 @@
 bool    Client::Kick(vector<string> cmd) {
     // for (size_t i = 0; i < cmd.size(); i++)
     //     cout << "[" + cmd[i] + "]" << endl;
-    if (cmd.size() == 4) {
+    if (cmd.size() == 4 || cmd.size() == 3){
         if (Server::getInstance()->getChannels().find(cmd[1]) != Server::getInstance()->getChannels().end()) {
             Channel *chnl = Server::getInstance()->getChannels()[cmd[1]];
             if (chnl->isMember(this)) {
@@ -28,7 +28,10 @@ bool    Client::Kick(vector<string> cmd) {
                         ErrorMsgGenrator("IRCserv.1337.ma 441 ", " " + cmd[2] + " " + cmd[1] + " :They aren't on that channel", *this);
                         return false;
                     }
-                    SendMsg(*this, *chnl, cmd[0], cmd[3] , cmd[1] + " " + cmd[2]);
+                    if (cmd.size() == 3)
+                        SendMsg1(*this, *chnl, cmd[0], " " , cmd[1] + " " + cmd[2]);
+                    else
+                        SendMsg1(*this, *chnl, cmd[0], cmd[3] , cmd[1] + " " + cmd[2]);
                     VcRemove((*it)->Chnls, cmd[1]);
                     chnl->kickUser(this, *it);
                     if (chnl->getMembers().empty()) {

@@ -93,4 +93,5 @@ class Client {
 void    ErrorMsgGenrator(string const &Prefix, string const &Sufix, Client &Sender);
 void	SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const &Msg, string const &Trg);
 void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
+void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
 vector<string> getTargets(string, char);

@@ -265,7 +265,7 @@ void    ErrorMsgGenrator(string const &Prefix, string const &Sufix, Client &Send
  */
 
 void    SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const &Msg, string const &Trg) {
-    string msg = ":" + Sender.getNckName() + "!~" + Sender.getRlName()
+    string msg = ":" + Sender.getNckName() + "!" + Sender.getRlName()
                 + "@" + Sender.getHstName() + " " + Cmd + " " + Trg
                 + ((Msg.empty()) ? "\r\n" : " :" + Msg + "\r\n");
 
@@ -289,9 +289,19 @@ void    SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const
  */
 
 void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg) {
-    string msg = ":" + Sender.getNckName() + "!~" + Sender.getRlName()
+    string msg = ":" + Sender.getNckName() + "!" + Sender.getRlName()
                 + "@" + Sender.getHstName() + " " + Cmd + " " + Trg
                 + ((Msg.empty()) ? "\r\n" : " :" + Msg + "\r\n");
+
+    for (size_t i = 0; i < Reciver.getMembers().size(); i++)
+        if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
+            Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
+}
+void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg) {
+    string msg = ":" + Sender.getNckName() + "!" + Sender.getRlName()
+                + "@" + Sender.getHstName() + " " + Cmd + " " + Trg
+                + ((Msg.empty()) ? "\r\n" : " " + Msg + "\r\n");
 
     for (size_t i = 0; i < Reciver.getMembers().size(); i++)
         if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)

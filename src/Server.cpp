@@ -296,7 +296,7 @@ void	Server::RegistMsgReply(const Client& u)
 	stringstream	wMsg;
 		// RPL_WELCOME
 	const string&	nickName = u.getNckName();
-	wMsg << GRN << ":" << SERVER_NAME << " 001 " << nickName 
+	wMsg << ":" << SERVER_NAME << " 001 " << nickName 
 	<< " : Welcome to the Internet Relay Network" << "\r\n";
 		// RPL_YOURHOST
 	wMsg <<":" << SERVER_NAME << " 002 " << nickName 
@@ -309,7 +309,7 @@ void	Server::RegistMsgReply(const Client& u)
 	// <available cmodes>: List of available channel modes.
 	wMsg << ":" << "server 004 " << nickName 
 	<< " " << SERVER_NAME << " Version relaisse "<< VERSION << " <available umodes>" 
-	<< " <available cmodes>" << C_CLS << "\r\n";
+	<< " <available cmodes>" << "\r\n";
 	Server::Instance->BroadCastMsg(u, wMsg);
 }
 
