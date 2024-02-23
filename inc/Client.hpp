@@ -57,7 +57,7 @@ class Client {
         /*         [SETTERS]        */
 		void		   setCmd(string);
 		void		   setMsgDzeb(string rep) {this->Msg = rep;}
-
+		void		   setChannel(string ch) {this->Chnls.push_back(ch);}
         /****************************/
         /*        [OPERATORS]       */
         bool operator==(const Client &obj) const {return this->ClntFd == obj.ClntFd;}
