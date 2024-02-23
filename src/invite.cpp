@@ -21,8 +21,8 @@ void   Channel::inviteCommand(vector<string> arg, Client* const client)
         return ;
     }
     this->invite(clnt);
-    msg = ":" + client->getNckName() + " INVITE " + arg[1] + " to " + this->getName() + "\r\n";
-    send(client->getClntFd(), msg.c_str(), msg.size(), 0);
+    msg = ":" + client->getNckName() + "!~" + client->getRlName()
+                + "@" + client->getHstName() + " INVITE " + clnt->getNckName() +" "+this->getName()+"\r\n";
     send(clnt->getClntFd(), msg.c_str(), msg.size(), 0);
 }
 

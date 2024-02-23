@@ -22,10 +22,16 @@ Client::Client(int ClntFd, in_addr *ClntAddr) : ClntFd(ClntFd), Regestred(false)
 	this->DoCmd["MODE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::modeCommand);
 	this->DoCmd["INVITE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::inviteCommand);
 	this->DoCmd["INFOC"] = static_cast<bool (Client::*)(vector<string>)>(&Client::infoChannel);
+	this->DoCmd["PING"] = static_cast<bool (Client::*)(vector<string>)>(&Client::pong);
     this->HstName = inet_ntoa(*ClntAddr);
 }
 		// bool		   infoChannel(vector<string>);
 
+bool Client::pong(vector<string> cmd)
+{
+    (void)cmd;
+    return true;
+}
 bool Client::infoChannel(vector<string> cmd)
 {
     try
@@ -285,12 +291,12 @@ void    SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const
 void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg) {
     string msg = ":" + Sender.getNckName() + "!~" + Sender.getRlName()
                 + "@" + Sender.getHstName() + " " + Cmd + " " + Trg
-                + " :" + Msg + "\r\n";
+                + (!Msg.empty()? " :" : "")+ Msg + "\r\n";
 
     for (size_t i = 0; i < Reciver.getMembers().size(); i++)
-        if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
-            if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-                Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
+            Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
 }
 
 

@@ -39,13 +39,21 @@ static void    joinParser(vector<string> join, queue<string> &channels, queue<st
             channels.push(channel);
         }
     }
-    
+    if (join.size() == 1)
+        return;
     stringstream pswds(join[1]);
     string password;
     while (getline(pswds, password, ','))
     {
         passwords.push(password);
     }
+}
+string listMembers(Channel &ch) {
+    string str;
+    vector<Client *> Mbrs = ch.getMembers();
+    for (size_t i = 0; i < Mbrs.size(); i++)
+        str += ((ch.isOperator(Mbrs[i])) ? "@" : "") + Mbrs[i]->getNckName() + ((i+1!=Mbrs.size()) ? " " : ""); 
+    return str;
 }
 
 bool    Client::joinCommand(vector<string> join)
@@ -90,11 +98,14 @@ bool    Client::joinCommand(vector<string> join)
             Channel *chnl = new Channel(this, channels.front());
 
             Channels[channels.front()] = chnl;
-
-            ErrorMsgGenrator(":irc_server 471 ", " " + channels.front() + " :Channel created successfully", *this);
-            msg += ":" + this->NckName+ "!" + this->UsrName + "@" + this->HstName + " JOIN " + channels.front() + "\r\n";
-            msg += ":IRC_SERVER 353 " + this->NckName + " = " + channels.front() + " :@"+this->NckName+"\r\n";
-            msg += ":IRC_SERVER 366 " + this->NckName + " " + channels.front() + " ::End of /NAMES list\r\n";
+            cout << "channel created" << Channels[channels.front()]->getName() << " : " << channels.front() << endl;
+            SendMsg(*this, *this, join[0], "", channels.front());
+            ErrorMsgGenrator(":ircserv 353 ", " = " + channels.front() + " :@"+this->NckName, *this);
+            ErrorMsgGenrator(":ircserv 366 ", " " + channels.front() + " :End of /NAMES list.", *this);
+            // ErrorMsgGenrator(":irc_server 471 ", " " + channels.front() + " :Channel created successfully", *this);
+            // msg += ":" + this->NckName+ "!" + this->UsrName + "@" + this->HstName + " JOIN " + channels.front() + "\r\n";
+            // msg += ":IRC_SERVER 353 " + this->NckName + " = " + channels.front() + " :@"+this->NckName+"\r\n";
+            // msg += ":IRC_SERVER 366 " + this->NckName + " " + channels.front() + " ::End of /NAMES list\r\n";
             this->Chnls.push_back(channels.front());
         }
         else
@@ -135,7 +146,7 @@ bool    Client::joinCommand(vector<string> join)
                 if (!search->second->isInvited(this))
                 {
                     ErrorMsgGenrator(":irc_server 473 ", " " + channels.front() + " :Cannot join channel (+i) - You must be invited", *this);
-                    msg += "473  JOIN :Cannot join channel (+i)\r\n";
+                    // msg += "473  JOIN :Cannot join channel (+i)\r\n";
                     channels.pop();
                     continue;
                 }
@@ -144,18 +155,22 @@ bool    Client::joinCommand(vector<string> join)
                     search->second->removeInvited(this);
                 }
             }
+            // string users(" "+this->NckName);
+            // string operators = "";
+            // for (size_t i = 0; i < search->second->getMembers().size(); i++)
+            // {
 
-            string users(this->NckName);
-            for (size_t i = 0; i < search->second->getMembers().size(); i++)
-            { 
-                users += " " + search->second->getMembers()[i]->getNckName();
-                msg = ":" + this->NckName+ "!" + this->UsrName + "@" + this->HstName + " JOIN " + channels.front() + "\r\n";
-                send(search->second->getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0);
-            }
-            msg += ":IRC_SERVER 353 " + this->NckName + " = " + channels.front() + " :@"+users+"\r\n";
-            msg += ":IRC_SERVER 366 " + this->NckName + " " + channels.front() + " ::End of /NAMES list\r\n";
+            //     users += " " + search->second->getMembers()[i]->getNckName();
+            //     msg = ":" + this->NckName+ "!" + this->UsrName + "@" + this->HstName + " JOIN " + channels.front() + "\r\n";
+            //     send(search->second->getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0);
+            // }
+            // msg += ":IRC_SERVER 353 " + this->NckName + " = " + channels.front() + " :"+operators+users+"\r\n";
+            // msg += ":IRC_SERVER 366 " + this->NckName + " " + channels.front() + " :End of /NAMES list\r\n";
             search->second->addMember(this);
             this->Chnls.push_back(channels.front());
+            SendMsg(*this, *search->second, join[0], "", channels.front());
+            ErrorMsgGenrator(":ircserv 353 ", " = " + channels.front() + " :"+listMembers(*search->second), *this);
+            ErrorMsgGenrator(":ircserv 366 ", " " + channels.front() + " :End of /NAMES list.", *this);
         }
         channels.pop();
     }

@@ -7,7 +7,7 @@ void hundl(int) {interpted = true;}
 void f(void){system("lsof -c ircserv");}
 
 int main(int ac, char **av) {
-    atexit(f);
+    // atexit(f);
     if(ac == 3) {
         signal(SIGINT, hundl);
         // signal(SIGPIPE, SIG_IGN);

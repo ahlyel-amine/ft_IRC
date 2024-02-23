@@ -179,7 +179,8 @@ void inviteOnlyController(Channel* const channel, Client* const client, bool set
         if (!channel->isInviteOnly())
         {
             channel->setIviteOnly();
-            SendMsg(*client, *channel, "MODE", "", "+i");
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" +i");
+            // SendMsg(*client, *channel, "MODE", "", "+i");
             // genericReplies(channel, client, INVITE_ONLY_SET);
         }
         else
@@ -193,7 +194,8 @@ void inviteOnlyController(Channel* const channel, Client* const client, bool set
         if (channel->isInviteOnly())
         {
             channel->unsetInviteOnly();
-            SendMsg(*client, *channel, "MODE", "", "-i");
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" -i");
+            // SendMsg(*client, *channel, "MODE", "", "-i");
             // genericReplies(channel, client, INVITE_ONLY_UNSET);
         }
         else
@@ -215,8 +217,9 @@ void topicController(Channel* const channel, Client* const client, bool set)
         if (!channel->isTopic())
         {
             channel->setTopicBool();
-            SendMsg(*client, *channel, "MODE", "", "+t");
-            genericReplies(channel, client, TOPIC_SET);
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" +t");
+            // SendMsg(*client, *channel, "MODE", "", "+t");
+            // genericReplies(channel, client, TOPIC_SET);
         }
         else
         {
@@ -228,8 +231,9 @@ void topicController(Channel* const channel, Client* const client, bool set)
         if (channel->isTopic())
         {
             channel->unsetTopic();
-            SendMsg(*client, *channel, "MODE", "", "-t");
-            genericReplies(channel, client, TOPIC_UNSET);
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" -t");
+            // SendMsg(*client, *channel, "MODE", "", "-t");
+            // genericReplies(channel, client, TOPIC_UNSET);
         }
         else
         {
@@ -255,7 +259,8 @@ void    keyController(Channel* const channel, Client* const client, bool set, si
         if (!channel->isLocked())
         {
             channel->setPassword(string(arg[index]));
-            SendMsg(*client, *channel, "MODE", "", "+k "+channel->getPassword());
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" +k "+channel->getPassword());
+            // SendMsg(*client, *channel, "MODE", "", "+k "+channel->getPassword());
             // genericReplies(channel, client, PASSWORD_SET);
         }
         else
@@ -270,7 +275,7 @@ void    keyController(Channel* const channel, Client* const client, bool set, si
             if (channel->getPassword() == arg[index])
             {
                 channel->unsetPassword();
-                SendMsg(*client, *channel, "MODE", "", "-k "+channel->getPassword());
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" -k "+channel->getPassword());
                 // genericReplies(channel, client, PASSWORD_UNSET);
             }
             else
@@ -317,7 +322,9 @@ void    operatorController(Channel* const channel, Client* const client, bool se
             if (!channel->isOperator(&it->second))
             {
                 channel->setOperator(&it->second);
-                SendMsg(*client, *channel, "MODE", "", "+o "+it->second.getNckName());
+                // :irc.example.com 221 YourNick #example_channel +o OperatorNick
+                // ErrorMsgGenrator(":irc_server 221 ", " " + client->getNckName() + " " + channel->getName() + " +o " + it->second.getNckName(), *client);
+                SendMsg(*client, *channel, "MODE", "", channel->getName()+" +o "+it->second.getNckName());
                 // genericReplies(channel, client, OPERATOR_ADDED);
             }
             else
@@ -332,7 +339,7 @@ void    operatorController(Channel* const channel, Client* const client, bool se
         if (channel->isOperator(&it->second))
         {
             channel->removeOperator(&it->second);
-            SendMsg(*client, *channel, "MODE", "", "-o "+client->getNckName());
+            SendMsg(*client, *channel, "MODE", "", channel->getName()+" -o "+it->second.getNckName());
             // genericReplies(channel, client, OPERATOR_REMOVED);
         }
         else
@@ -359,7 +366,8 @@ void    limitController(Channel* const channel, Client* const client, bool set, 
         }
         if (!channel->isLimited())
         {
-            SendMsg(*client, *channel, "MODE", "", "+l "+arg[index]);
+            SendMsg(*client, *channel, "MODE", "", channel->getName()+" +l "+arg[index]);
+            // SendMsg(*client, *channel, "MODE", "", "+l "+arg[index]);
             channel->setLimit(atoll(arg[index].c_str()));
             // genericReplies(channel, client, LIMIT_SET);
         }
@@ -373,7 +381,8 @@ void    limitController(Channel* const channel, Client* const client, bool set, 
         if (channel->isLimited())
         {
             channel->unsetLimit();
-            SendMsg(*client, *channel, "MODE", "", "-l "+arg[index]);
+            SendMsg(*client, *channel, "MODE", "", channel->getName()+" -l "+arg[index]);
+            // SendMsg(*client, *channel, "MODE", "", "-l "+arg[index]);
             // genericReplies(channel, client, LIMIT_UNSET);
         }
         else

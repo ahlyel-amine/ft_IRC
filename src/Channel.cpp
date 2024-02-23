@@ -2,6 +2,7 @@
 
 Channel::~Channel()
 {
+    delete this;
 }
 
 /**
@@ -187,26 +188,6 @@ void    Channel::kickUser(Client* const admin, Client* const user)
         else if (this->isOperator(admin) && this->isOperator(user))
         {
             this->removeOperator(user);
-        }
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-}
-
-void    Channel::autoAssignAdmin()
-{
-    try
-    {
-        if (members.size() > 0)
-        {
-            this->addOperator(this->members[0]);
-            // this->removeMember(this->members[0]);
-        }
-        else
-        {
-            this->~Channel();
         }
     }
     catch(const std::exception& e)

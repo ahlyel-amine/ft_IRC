@@ -34,7 +34,8 @@ void Server::SetSockFd(string &port) {
         if (this->SockFd < 0)
             continue;
         setsockopt(this->SockFd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val));
-        if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen)) {
+        if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen))
+        {
             close(this->SockFd);
             continue;
         }
@@ -172,6 +173,7 @@ bool Server::ReplyToClient(Client &Clnt) {
     char    Buff[3000];
     memset(Buff, 0, 3000);
     int val = recv(Clnt.getClntFd(), Buff, 3000, 0);
+    cout << "       buff :: \'"<< Buff <<"\'"<< endl;
     if (val > 0 && strlen(Buff)) {
         string Msg(Buff);
         Clnt.getBff() += Msg;
@@ -186,32 +188,27 @@ bool Server::ReplyToClient(Client &Clnt) {
 			// return Clnt.ParsAndExec();
         // return (Clnt.getMsg().empty()) ? true : Clnt.ParsAndExec();
     }
-    else if (!val)
-    {
-        map<string, Channel*>                &Channels =  Server::getInstance()->getChannels();
-        int fd = Clnt.getClntFd();
-        (void)fd;
-
-        for (size_t i = 0; i < Clnt.getChnls().size(); i++)
-        {
-            string msg = ":" + Clnt.getNckName()+ "!" + Clnt.getUsrName() + "@" + Clnt.getHstName() + " PART " + Clnt.getChnls()[i] + "\r\n";
-            for (size_t j = 0; j < Channels.find(Clnt.getChnls()[i])->second->getMembers().size(); j++)
-            {
-                if (Channels.find(Clnt.getChnls()[i])->second->getMembers()[j]->getClntFd() != Clnt.getClntFd())
-                    send(Channels.find(Clnt.getChnls()[i])->second->getMembers()[j]->getClntFd(), msg.c_str(), msg.size(), 0);
-            }
-            Channels[Clnt.getChnls()[i]]->removeMember(&Clnt);
-            Channels[Clnt.getChnls()[i]]->removeOperator(&Clnt);
-        }
-        for (size_t i = 0; i < this->ClFds.size(); i++)
-        {
-            if (this->ClFds[i].fd == fd)
-                this->ClFds.erase(this->ClFds.begin() + i);
-        }
-    }
     else
 	    cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
-    this->RemoveClient(Clnt.getClntFd());
+
+    map<string, Channel*>                &Channels =  Server::getInstance()->getChannels();
+    int fd = Clnt.getClntFd();
+    (void)fd;
+
+    for (size_t i = 0; i < Clnt.getChnls().size(); i++)
+    {
+        string msg = ":" + Clnt.getNckName()+ "!" + Clnt.getUsrName() + "@" + Clnt.getHstName() + " PART " + Clnt.getChnls()[i] + "\r\n";
+        for (size_t j = 0; j < Channels.find(Clnt.getChnls()[i])->second->getMembers().size(); j++)
+        {
+            if (Channels.find(Clnt.getChnls()[i])->second->getMembers()[j]->getClntFd() != Clnt.getClntFd())
+                send(Channels.find(Clnt.getChnls()[i])->second->getMembers()[j]->getClntFd(), msg.c_str(), msg.size(), 0);
+        }
+        Channels[Clnt.getChnls()[i]]->removeMember(&Clnt);
+        Channels[Clnt.getChnls()[i]]->removeOperator(&Clnt);
+    }
+    this->Clients.erase(fd);
+    close(fd);
+    // this->RemoveClient(Clnt.getClntFd());
     return false;
 }
 /*
