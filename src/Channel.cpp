@@ -2,8 +2,7 @@
 
 Channel::~Channel()
 {
-    // delete Server::getInstance()->getChannels()[this->name];
-    // Server::getInstance()->getChannels().erase(this->name);
+    // delete this;
 }
 
 /**
@@ -184,26 +183,6 @@ void    Channel::kickUser(Client* const admin, Client* const user)
         std::cerr << e.what() << '\n';
     }
 }
-
-// void    Channel::autoAssignAdmin()
-// {
-//     try
-//     {
-//         if (members.size() > 0)
-//         {
-//             this->addOperator(this->members[0]);
-//             // send()
-//         }
-//         else
-//         {
-//             this->~Channel();
-//         }
-//     }
-//     catch(const std::exception& e)
-//     {
-//         std::cerr << e.what() << '\n';
-//     }
-// }
 
 void    Channel::setLimit(const size_t limit)
 {

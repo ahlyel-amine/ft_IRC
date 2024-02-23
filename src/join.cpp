@@ -2,13 +2,6 @@
 #include "Channel.hpp"
 #include <queue>
 
-string listMembers(Channel &ch) {
-    string str;
-    vector<Client *> Mbrs = ch.getMembers();
-    for (size_t i = 0; i < Mbrs.size(); i++)
-        str += ((ch.isOperator(Mbrs[i])) ? "@" : "") + Mbrs[i]->getNckName() + ((i+1!=Mbrs.size()) ? " " : ""); 
-    return str;
-}
 
 static bool is_channel(string channel)
 {
@@ -47,13 +40,21 @@ static void    joinParser(vector<string> join, queue<string> &channels, queue<st
             channels.push(channel);
         }
     }
-    
+    if (join.size() == 1)
+        return;
     stringstream pswds(join[1]);
     string password;
     while (getline(pswds, password, ','))
     {
         passwords.push(password);
     }
+}
+string listMembers(Channel &ch) {
+    string str;
+    vector<Client *> Mbrs = ch.getMembers();
+    for (size_t i = 0; i < Mbrs.size(); i++)
+        str += ((ch.isOperator(Mbrs[i])) ? "@" : "") + Mbrs[i]->getNckName() + ((i+1!=Mbrs.size()) ? " " : ""); 
+    return str;
 }
 
 bool    Client::joinCommand(vector<string> join)
@@ -140,7 +141,7 @@ bool    Client::joinCommand(vector<string> join)
                 if (!search->second->isInvited(this))
                 {
                     ErrorMsgGenrator(":irc_server 473 ", " " + channels.front() + " :Cannot join channel (+i) - You must be invited", *this);
-                    msg += "473  JOIN :Cannot join channel (+i)\r\n";
+                    // msg += "473  JOIN :Cannot join channel (+i)\r\n";
                     channels.pop();
                     continue;
                 }

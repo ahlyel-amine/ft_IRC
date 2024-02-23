@@ -27,6 +27,11 @@ Client::Client(int ClntFd, in_addr *ClntAddr) : ClntFd(ClntFd), Regestred(false)
 }
 		// bool		   infoChannel(vector<string>);
 
+bool Client::pong(vector<string> cmd)
+{
+    (void)cmd;
+    return true;
+}
 bool Client::infoChannel(vector<string> cmd)
 {
     try
@@ -289,9 +294,9 @@ void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string cons
                 + ((Msg.empty()) ? "\r\n" : " :" + Msg + "\r\n");
 
     for (size_t i = 0; i < Reciver.getMembers().size(); i++)
-        if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
-            if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-                Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
+            Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
 }
 
 

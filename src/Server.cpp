@@ -42,7 +42,8 @@ void Server::SetSockFd(string &port) {
         if (this->SockFd < 0)
             continue;
         setsockopt(this->SockFd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val));
-        if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen)) {
+        if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen))
+        {
             close(this->SockFd);
             continue;
         }
@@ -183,6 +184,7 @@ bool Server::ReplyToClient(Client &Clnt) {
     char    Buff[3000];
     memset(Buff, 0, 3000);
     int val = recv(Clnt.getClntFd(), Buff, 3000, 0);
+    cout << "       buff :: \'"<< Buff <<"\'"<< endl;
     if (val > 0 && strlen(Buff)) {
         string Msg(Buff);
         Clnt.getBff() += Msg;
