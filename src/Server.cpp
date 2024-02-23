@@ -184,7 +184,7 @@ bool Server::ReplyToClient(Client &Clnt) {
     char    Buff[3000];
     memset(Buff, 0, 3000);
     int val = recv(Clnt.getClntFd(), Buff, 3000, 0);
-    cout << "       buff :: \'"<< Buff <<"\'"<< endl;
+    // cout << "       buff :: \'"<< Buff <<"\'"<< endl;
     if (val > 0 && strlen(Buff)) {
         string Msg(Buff);
         Clnt.getBff() += Msg;

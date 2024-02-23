@@ -33,7 +33,7 @@ static void    joinParser(vector<string> join, queue<string> &channels, queue<st
     {
         if (!is_channel(channel))
         {
-            ErrorMsgGenrator(":irc_server 476 ", " " + channel + " Bad Channel Name", client);
+            ErrorMsgGenrator(":IRCserv.1337.ma 476 ", " " + channel + " Bad Channel Name", client);
         }
         else
         {
@@ -65,7 +65,7 @@ bool    Client::joinCommand(vector<string> join)
 
     if (!this->Regestred)
     {
-        ErrorMsgGenrator(":irc_server 451 ", " " + join[0] + " :You have not registered", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 451 ", " " + join[0] + " :You have not registered", *this);
         return (false);
     }
 
@@ -110,7 +110,7 @@ bool    Client::joinCommand(vector<string> join)
             {
                 if (passwords.empty() || (search->second->getPassword() != passwords.front()))
                 {
-                    ErrorMsgGenrator(":irc_server 475 ", " " + channels.front() + " :Cannot join channel (+k) - bad key", *this);
+                    ErrorMsgGenrator(":IRCserv.1337.ma 475 ", " " + channels.front() + " :Cannot join channel (+k) - bad key", *this);
                     channels.pop();
                     continue;
                 }
@@ -123,7 +123,7 @@ bool    Client::joinCommand(vector<string> join)
             {
                 if (search->second->getLimit() <= search->second->getMembers().size())
                 {
-                    ErrorMsgGenrator(":irc_server 471 ", " " + channels.front() + " :Cannot join channel (+l) - channel is full", *this);
+                    ErrorMsgGenrator(":IRCserv.1337.ma 471 ", " " + channels.front() + " :Cannot join channel (+l) - channel is full", *this);
                     channels.pop();
                     continue;
                 }
@@ -131,7 +131,7 @@ bool    Client::joinCommand(vector<string> join)
 
             if (search->second->isMember(this))
             {
-                ErrorMsgGenrator(":irc_server 443 ", " " + channels.front() + " :You are already on that channel", *this);
+                ErrorMsgGenrator(":IRCserv.1337.ma 443 ", " " + channels.front() + " :You are already on that channel", *this);
                 channels.pop();
                 continue;
             }
@@ -140,7 +140,7 @@ bool    Client::joinCommand(vector<string> join)
             {
                 if (!search->second->isInvited(this))
                 {
-                    ErrorMsgGenrator(":irc_server 473 ", " " + channels.front() + " :Cannot join channel (+i) - You must be invited", *this);
+                    ErrorMsgGenrator(":IRCserv.1337.ma 473 ", " " + channels.front() + " :Cannot join channel (+i) - You must be invited", *this);
                     // msg += "473  JOIN :Cannot join channel (+i)\r\n";
                     channels.pop();
                     continue;

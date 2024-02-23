@@ -103,7 +103,7 @@ void    getOperations(vector<string> arg, queue<pair <bool, char> > &modesQueue,
             case '+':
                 if (!arg[0][i + 1])
                 {
-                    ErrorMsgGenrator(":irc_server 501 ", " :Unknown MODE flag", client);
+                    ErrorMsgGenrator(":IRCserv.1337.ma 501 ", " :Unknown MODE flag", client);
                 }
                 for (j = i + 1; j < arg[0].size() && arg[0][j] != '-' && arg[0][j] != '+'; j++)
                 {
@@ -125,7 +125,7 @@ void    getOperations(vector<string> arg, queue<pair <bool, char> > &modesQueue,
                             modesQueue.push(make_pair(true, 'l'));
                             break ;
                         default:
-                            ErrorMsgGenrator(":irc_server 501 ", " :Unknown MODE flag", client);
+                            ErrorMsgGenrator(":IRCserv.1337.ma 501 ", " :Unknown MODE flag", client);
                             break ;
                     }
                     i = j;
@@ -133,7 +133,7 @@ void    getOperations(vector<string> arg, queue<pair <bool, char> > &modesQueue,
                 break ;
             case '-':
                 if (!arg[0][i + 1])
-                    ErrorMsgGenrator(":irc_server 501 ", " :Unknown MODE flag", client);
+                    ErrorMsgGenrator(":IRCserv.1337.ma 501 ", " :Unknown MODE flag", client);
                 for (j = i + 1; j < arg[0].size() && arg[0][j] != '-' && arg[0][j] != '+'; j++)
                 {
                     switch (arg[0][j])
@@ -154,14 +154,14 @@ void    getOperations(vector<string> arg, queue<pair <bool, char> > &modesQueue,
                             modesQueue.push(make_pair(false, 'l'));
                             break ;
                         default:
-                            ErrorMsgGenrator(":irc_server 501 ", " :Unknown MODE flag", client);
+                            ErrorMsgGenrator(":IRCserv.1337.ma 501 ", " :Unknown MODE flag", client);
                             break ;
                     }
                     i = j;
                 }
                 break ;
             default:
-                ErrorMsgGenrator(":irc_server 501 ", " :Unknown MODE flag", client);
+                ErrorMsgGenrator(":IRCserv.1337.ma 501 ", " :Unknown MODE flag", client);
                 break ;
         }
     }
@@ -171,7 +171,7 @@ void inviteOnlyController(Channel* const channel, Client* const client, bool set
 {
     if (!channel->isOperator(client))
     {
-        ErrorMsgGenrator(":irc_server 482 ", channel->getName() + " :You're not channel operator", *client);
+        ErrorMsgGenrator(":IRCserv.1337.ma 482 ", channel->getName() + " :You're not channel operator", *client);
         return ;
     }
     if (set)
@@ -185,8 +185,8 @@ void inviteOnlyController(Channel* const channel, Client* const client, bool set
         }
         else
         {
-            ErrorMsgGenrator(":irc_server 473 ", channel->getName() + " :Channel is already invite only", *client);
-            ;// msg += "IRC_SERVER 473 ERR_INVITEONLYCHAN :Channel is already invite only\r\n";
+            ErrorMsgGenrator(":IRCserv.1337.ma 473 ", channel->getName() + " :Channel is already invite only", *client);
+            ;// msg += "IRCserv.1337.ma 473 ERR_INVITEONLYCHAN :Channel is already invite only\r\n";
         }
     }
     else
@@ -200,7 +200,7 @@ void inviteOnlyController(Channel* const channel, Client* const client, bool set
         }
         else
         {
-            ;// msg += "IRC_SERVER 473 ERR_INVITEONLYCHAN :Channel is already not invite only\r\n";
+            ;// msg += "IRCserv.1337.ma 473 ERR_INVITEONLYCHAN :Channel is already not invite only\r\n";
         }
     }
 }
@@ -223,7 +223,7 @@ void topicController(Channel* const channel, Client* const client, bool set)
         }
         else
         {
-            ;// msg += "IRC_SERVER  442 ERR_NOTOPIC :Channel topic is already public\r\n";
+            ;// msg += "IRCserv.1337.ma  442 ERR_NOTOPIC :Channel topic is already public\r\n";
         }
     }
     else
@@ -237,7 +237,7 @@ void topicController(Channel* const channel, Client* const client, bool set)
         }
         else
         {
-            ;// msg += "IRC_SERVER  442 ERR_NOTOPIC :Channel topic is already private\r\n";
+            ;// msg += "IRCserv.1337.ma  442 ERR_NOTOPIC :Channel topic is already private\r\n";
         }
     }
 }
@@ -251,7 +251,7 @@ void    keyController(Channel* const channel, Client* const client, bool set, si
     }
     if (++index >= arg.size())
     {
-        ;// msg += "IRC_SERVER 461 ERR_NEEDMOREPARAMS :Not enough parameters\r\n";
+        ;// msg += "IRCserv.1337.ma 461 ERR_NEEDMOREPARAMS :Not enough parameters\r\n";
         return ;
     }
     if (set)
@@ -265,7 +265,7 @@ void    keyController(Channel* const channel, Client* const client, bool set, si
         }
         else
         {
-            ;// msg += "IRC_SERVER 467 ERR_KEYSET :Channel key is already set\r\n";
+            ;// msg += "IRCserv.1337.ma 467 ERR_KEYSET :Channel key is already set\r\n";
         }
     }
     else
@@ -279,11 +279,11 @@ void    keyController(Channel* const channel, Client* const client, bool set, si
                 // genericReplies(channel, client, PASSWORD_UNSET);
             }
             else
-                ;// msg += "IRC_SERVER 475 ERR_BADCHANNELKEY :Wrong channel key\r\n";
+                ;// msg += "IRCserv.1337.ma 475 ERR_BADCHANNELKEY :Wrong channel key\r\n";
         }
         else
         {
-            ;// msg += "IRC_SERVER 467 ERR_KEYSET :Channel key is already unset\r\n";
+            ;// msg += "IRCserv.1337.ma 467 ERR_KEYSET :Channel key is already unset\r\n";
         }
     }
 }
@@ -323,14 +323,14 @@ void    operatorController(Channel* const channel, Client* const client, bool se
             {
                 channel->setOperator(&it->second);
                 // :irc.example.com 221 YourNick #example_channel +o OperatorNick
-                // ErrorMsgGenrator(":irc_server 221 ", " " + client->getNckName() + " " + channel->getName() + " +o " + it->second.getNckName(), *client);
+                // ErrorMsgGenrator(":IRCserv.1337.ma 221 ", " " + client->getNckName() + " " + channel->getName() + " +o " + it->second.getNckName(), *client);
                 SendMsg(*client, *channel, "MODE", "", channel->getName()+" +o "+it->second.getNckName());
                 // genericReplies(channel, client, OPERATOR_ADDED);
             }
             else
             {
 
-                ;// msg += ":IRC_SERVER is already admin " + arg[index] + " :is an operator\r\n";
+                ;// msg += ":IRCserv.1337.ma is already admin " + arg[index] + " :is an operator\r\n";
             }
         }
     }
@@ -373,7 +373,7 @@ void    limitController(Channel* const channel, Client* const client, bool set, 
         }
         else
         {
-            ;// msg += "IRC_SERVER limited :Channel is already limited\r\n";
+            ;// msg += "IRCserv.1337.ma limited :Channel is already limited\r\n";
         }
     }
     else
@@ -387,7 +387,7 @@ void    limitController(Channel* const channel, Client* const client, bool set, 
         }
         else
         {
-            ;// msg += "IRC_SERVER  unlimited :Channel is already not unlimited\r\n";
+            ;// msg += "IRCserv.1337.ma  unlimited :Channel is already not unlimited\r\n";
         }
     }
 }
@@ -405,7 +405,7 @@ static void printModes(Privelege priv, Client &client)
         modes += "k";
     if (priv.limit)
         modes += "l";
-    ErrorMsgGenrator(":irc_server 324 ", " " + modes, client);
+    ErrorMsgGenrator(":IRCserv.1337.ma 324 ", " " + modes, client);
 }
 
 static void    modeSelector(queue<pair <bool, char> > &modesQueue, Channel* const channel, Client* const client, bool set, size_t &index, vector<string> arg)
