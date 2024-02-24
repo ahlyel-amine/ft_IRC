@@ -80,8 +80,8 @@ class Client {
 		bool		   pong(vector<string>);
 		bool		   Topic(vector<string>);
 		bool		   Pong(vector<string> vc) {
-			// (void)vc;
-			cout << vc[0] << endl;
+			(void)vc;
+			// cout << vc[0] << endl;
 			return true;
 		}
 		void		   Welcome();

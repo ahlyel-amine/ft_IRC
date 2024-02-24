@@ -89,8 +89,6 @@ class Server {
         int                     getClientByNckName(string &NckName);
         /*************************/
         static string           Welcome();
-		static void			    RegistMsgReply( const Client& );
-		void				    BroadCastMsg( const Client& reciever, const stringstream& msg ) const;
 };
 
 template <typename T>
