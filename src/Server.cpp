@@ -89,7 +89,7 @@ void	Server::SocketListen( void )
 Server *Server::InstanceServer(string &port, string &psw) {
     if (!Instance) {
         Instance = new Server();
-        if (port.find_first_not_of("0123456789") != string::npos){
+        if (port.find_first_not_of("0123456789") != string::npos || atoi(port.c_str()) < 1024){
             cerr << "Invalid Argument: " << (!psw.empty() ? "The port must contain only numbers." : "Empty Password.") << endl;
             exit(1);
         }
