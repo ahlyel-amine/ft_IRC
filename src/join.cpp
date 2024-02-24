@@ -57,7 +57,7 @@ static string listMembers(Channel &ch)
     return str;
 }
 
-static void    initiateChannel(map<string, Channel*> &Channels, queue<string>& const channels, vector<string> join, string const &channel, Client* const client)
+static void    initiateChannel(map<string, Channel*> &Channels, queue<string>& channels, vector<string> join, string const &channel, Client* const client)
 {
     if (!Channels.count(channel))
     {
