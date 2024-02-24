@@ -42,13 +42,13 @@ bool	Client::setNewTopic(vector<string>& cmd)
 				}	
 			}
 			else
-				ErrorMsgGenrator(":ircserv 482 ", " " + cmd[0] + " :You're not channel operator", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 482 ", " " + cmd[0] + " :You're not channel operator", *this);
 		}
 		else
-				ErrorMsgGenrator(":ircserv 482 ", " " + cmd[0] + " :You're not on the channel", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 482 ", " " + cmd[0] + " :You're not on the channel", *this);
 	}
 	else
-		ErrorMsgGenrator(":ircserv 403 ", " " + cmd[0] + " :No such channel", *this);
+		ErrorMsgGenrator(":IRCserv.1337.ma 403 ", " " + cmd[0] + " :No such channel", *this);
 	return true;
 }
 
@@ -60,20 +60,20 @@ bool	Client::listChannelTopic(vector<string>& cmd)
 		if (it->second->isMember(this))
 		{
 			if (it->second->getTopic().empty())
-				ErrorMsgGenrator(":ircserv 331 ", " " + cmd[0] + " :No topic is set", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 331 ", " " + cmd[0] + " :No topic is set", *this);
 			else
-				ErrorMsgGenrator(":ircserv 332 ", " " + cmd[0] + " :" + it->second->getTopic(), *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 332 ", " " + cmd[0] + " :" + it->second->getTopic(), *this);
 		}
 		else
-			ErrorMsgGenrator(":ircserv 403 ", " " + cmd[0] + " :You are not on this channel", *this);
+			ErrorMsgGenrator(":IRCserv.1337.ma 403 ", " " + cmd[0] + " :You are not on this channel", *this);
 	}
 	else
-		ErrorMsgGenrator(":ircserv 403 ", " " + cmd[0] + " :No such channel", *this);
+		ErrorMsgGenrator(":IRCserv.1337.ma 403 ", " " + cmd[0] + " :No such channel", *this);
 	return true;
 }
 bool	Client::noEnParam(vector<string>& cmd)
 {
-	ErrorMsgGenrator(":ircserv 461 ", " " + cmd[0] + " :Not enough parameters", *this);
+	ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + " :Not enough parameters", *this);
 	return false;
 }
 

@@ -57,12 +57,7 @@ class Server {
         /****************************************/
     public:
         Server() {}
-        ~Server() {
-            // for (map<int, Channel*>::iterator it = this->Channels.begin(); it != this->Channels.end(); it++)
-                // delete it->second;
-            // free Channels and channels
-            delete Instance;
-        }
+        ~Server();
         /*    [Server Actions]   */
         void                    launchServer();
         bool                    JoinServer();
@@ -114,3 +109,5 @@ void VcRemove(vector<T> &vc, T trg) {
     if (i != vc.size())
         vc.erase(vc.begin() + i);
 }
+
+string localTime(time_t);

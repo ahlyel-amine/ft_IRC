@@ -45,18 +45,19 @@ void	Client::sendChannelMsg(string& target, vector<string>& cmd)
 	{
 		if (find(this->Chnls.begin(), this->Chnls.end(), target) != this->Chnls.end())
 		{
-			vector<Client *> &channelMembers = Server::getInstance()->getChannels()[target]->getMembers();
-			for (uint16_t j = 0; j < channelMembers.size(); ++j)
-			{
-				if (channelMembers[j]->ClntFd != this->ClntFd)
-					SendMsg(*this, *channelMembers[j], cmd[0], cmd[2], target);
-			}
+			// vector<Client *> &channelMembers = Server::getInstance()->getChannels()[target]->getMembers();
+			// for (uint16_t j = 0; j < channelMembers.size(); ++j)
+			// {
+			// 	if (channelMembers[j]->ClntFd != this->ClntFd)
+			// 		SendMsg(*this, *channelMembers[j], cmd[0], cmd[2], target);
+			// }
+			SendMsg(*this, *Server::getInstance()->getChannel(target), cmd[0], cmd[2], target);
 		}
 		else
-			ErrorMsgGenrator("IRCserv.1337.ma 404 ", " " + target + " :Cannot send to channel", *this);
+			ErrorMsgGenrator(":IRCserv.1337.ma 404 ", " " + target + " :Cannot send to channel", *this);
 	}
 	else
-		ErrorMsgGenrator("IRCserv.1337.ma 403 ", " " + target + " :No such channel", *this);
+		ErrorMsgGenrator(":IRCserv.1337.ma 403 ", " " + target + " :No such channel", *this);
 }
 
 void	Client::sendClientMsg(string& target, vector<string>& cmd)
@@ -69,14 +70,14 @@ void	Client::sendClientMsg(string& target, vector<string>& cmd)
 	if (startIt != endIt)
 		SendMsg(*this, startIt->second, cmd[0], cmd[2], target);
 	else
-		ErrorMsgGenrator("IRCserv.1337.ma 401 ", " " + target + " :No such nick", *this);
+		ErrorMsgGenrator(":IRCserv.1337.ma 401 ", " " + target + " :No such nick", *this);
 }
 
 bool		  Client::SendPrvMsg(vector<string> cmd) {
     bool           rt = true;
     
     if (!this->Regestred) {
-        ErrorMsgGenrator("IRCserv.1337.ma 451 ", " " + cmd[0] + " :You have not registered", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 451 ", " " + cmd[0] + " :You have not registered", *this);
         return false;
     }
     if (cmd.size() == 3) {
@@ -93,10 +94,10 @@ bool		  Client::SendPrvMsg(vector<string> cmd) {
 		switch (failReplay)
 		{
 			case 1:
-				ErrorMsgGenrator("IRCserv.1337.ma 412 ", " :No text to send", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 412 ", " :No text to send", *this);
 				break;
 			case 2:
-				ErrorMsgGenrator("IRCserv.1337.ma 411 ", " :No recipient given", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 411 ", " :No recipient given", *this);
 				break;
 		}
         rt = false;

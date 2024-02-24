@@ -19,6 +19,17 @@ int Server::getClientByNckName(string &NckName) {
     return -1;
 }
 
+Server::~Server() {
+    for (map<string, Channel*>::iterator it = this->Channels.begin(); it != this->Channels.end(); it++)
+        delete it->second;
+    this->Channels.clear();
+    for (map<int, Client>::iterator it = this->Clients.begin(); it != this->Clients.end(); it++)
+        close(it->first);
+    this->Clients.clear();
+    this->ClFds.clear();
+    close(this->SockFd);
+}
+
 /*
     This member function open a socket
     for the server and bind it otherwise
@@ -28,11 +39,18 @@ int Server::getClientByNckName(string &NckName) {
 */
 void Server::SetSockFd(string &port) {
     struct addrinfo *ptr, *tmp, hnt;
+    char    str[256];
+    
+    if (gethostname(str, sizeof(str)) < 0) {
+        cerr << "Getting Host Name : " << strerror(errno) << endl;
+        exit(1);
+    }
     memset(&hnt, 0, sizeof(hnt));
     hnt.ai_family = AF_INET;
     hnt.ai_protocol = IPPROTO_TCP;
     hnt.ai_socktype = SOCK_STREAM;
-    int status = getaddrinfo(NULL, port.c_str(), &hnt, &ptr), enable = 1;
+    // int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), opt_val = 1;
+    int status = getaddrinfo(str, port.c_str(), &hnt, &ptr), enable = 1;
     if (status) {
         cerr << "Getting Address Info : " << gai_strerror(status) << endl;
         exit(1);
@@ -110,8 +128,7 @@ string Server::Welcome() {
     Wlcm += "\t██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝  \n";
     Wlcm += "\t╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n";
     Wlcm += "\t ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n";
-    Wlcm += "\t\t\tMade By : 0xJ4GU4R | 0x54B4 | 0xM0RPH5\n";
-    Wlcm += "For help type: HELP\n";
+    Wlcm += "\t\tMade By : 0xJ4GU4R | 0x54B4 | 0xM0RPH5\n";
     return Wlcm;
 }
 
@@ -179,6 +196,10 @@ bool	BufferFeed(Client &Clnt, string &buffer)
         cout << tmp << endl;
 		if (!Clnt.getMsg().empty())
             parsed = Clnt.ParsAndExec();
+        if (Clnt.getCmd() == "QUIT") {
+            Server::getInstance()->RemoveClient(Clnt.getClntFd());
+            return false;
+        }
 		tmp.clear();
 	}
     buffer = "";
@@ -198,21 +219,18 @@ bool Server::ReplyToClient(Client &Clnt) {
     if (val > 0 && strlen(Buff)) {
         string Msg(Buff);
         Clnt.getBff() += Msg;
-        if (Clnt.getBff().find('\n') == string::npos)
+	    if (Clnt.getBff().find('\n') == string::npos)
             return true;
         Msg.erase(0, Msg.find_first_not_of(" \t\n\v\f\r"));
-
-		return BufferFeed(Clnt, Clnt.getBff());
-
-    }
-
-	cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
+    	return BufferFeed(Clnt, Clnt.getBff());
+	}
+    cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
     vector<string> vc;
     vc.push_back("QUIT");
     Clnt.QuitServer(vc);
+    this->RemoveClient(Clnt.getClntFd());
     return false;
 }
-
 
 void    Server::RemoveClient(int fd) {
     for (size_t i = 0; i < this->ClFds.size(); i++) {
@@ -234,43 +252,8 @@ void    Server::RemoveClient(int fd) {
     }
     this->Clients.erase(fd);
     close(fd);
-//     map<int, Client>::iterator it = this->Clients.begin();
-//     cout << "\t---|Clients List|---" << endl;
-//     for (;it != this->Clients.end(); it++)
-//         cout << "Client:[" << it->second.getNckName() << "]in machine:[" << it->second.getHstName() << "] using socket[" << it->first <<"]" << endl;
 }
 
-
-void	Server::BroadCastMsg( const Client& reciever, const stringstream& msg ) const
-{
-	short	nByte = send(reciever.getClntFd(), msg.str().c_str(), msg.str().size(), 0);
-	if (nByte == -1)
-		cerr << RED << "[ Error ] BroadCastMsg Function " << strerror(errno) << C_CLS << endl;
-	
-}
-
-void	Server::RegistMsgReply(const Client& u)
-{
-	// cout << "ok" << endl;
-	stringstream	wMsg;
-		// RPL_WELCOME
-	const string&	nickName = u.getNckName();
-	wMsg << ":" << SERVER_NAME << " 001 " << nickName 
-	<< " : Welcome to the Internet Relay Network" << "\r\n";
-		// RPL_YOURHOST
-	wMsg <<":" << SERVER_NAME << " 002 " << nickName 
-	<< " : Your host is " << SERVER_NAME << ", running version " << VERSION << "\r\n";
-		// RPL_CREATED
-	wMsg << ":" << SERVER_NAME << " 003 " << nickName 
-	<< " :This " << SERVER_NAME << " server was created " << Server::Instance->LocalTime << "\r\n";
-		// RPL_MYINFO
-	// <available umodes>: List of available user modes.
-	// <available cmodes>: List of available channel modes.
-	wMsg << ":" << "server 004 " << nickName 
-	<< " " << SERVER_NAME << " Version relaisse "<< VERSION << " <available umodes>" 
-	<< " <available cmodes>" << "\r\n";
-	Server::Instance->BroadCastMsg(u, wMsg);
-}
 
 Client &               Server::getClient(string &NckName)
 {
