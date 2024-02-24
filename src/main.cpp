@@ -18,7 +18,14 @@ int main(int ac, char **av) {
 		cout << '\n' << srv->Welcome() << endl;
         cout << "\t\t[Server Started]" << endl << "Portleaks: " << prt << endl;
         while (!interpted)
-            srv->launchServer();
+        {
+			try{
+				srv->launchServer();
+			}catch(std::exception& e)
+			{
+				cerr << e.what() << endl;
+			}
+		}
         close(srv->getSockFd());
         system("leaks ircserv");
     }
