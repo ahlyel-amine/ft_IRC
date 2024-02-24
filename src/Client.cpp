@@ -196,6 +196,10 @@ bool    Client::ParsAndExec() {
     for (size_t i = 0; i < this->Cmd[0].size(); i++)
         if (isalpha(this->Cmd[0][i]) && islower(this->Cmd[0][i]))
             this->Cmd[0][i] = toupper(this->Cmd[0][i]);
+    if (!this->Regestred && (this->Cmd[0] != "PASS" && this->Cmd[0] != "NICK" && this->Cmd[0] != "USER" && this->Cmd[0] != "QUIT")) {
+        ErrorMsgGenrator(":IRCserv.1337.ma 451 ", " " + this->Cmd[0] + " :You have not registered", *this);
+        return false;
+    }
     if (this->DoCmd.find(this->Cmd[0]) != this->DoCmd.end())
         rt = (this->*DoCmd[this->Cmd[0]])(this->Cmd);
     else {

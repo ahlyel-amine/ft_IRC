@@ -193,7 +193,7 @@ static void    limitController(Channel* const channel, Client* const client, boo
     }
 }
 
-static void printModes(Privelege priv, Client &client)
+static void printModes(Privelege priv, string &chnl, Client &client)
 {
     string modes;
 
@@ -207,7 +207,7 @@ static void printModes(Privelege priv, Client &client)
         modes += "k";
     if (priv.limit)
         modes += "l";
-    ErrorMsgGenrator(":IRCserv.1337.ma 324 ", " " + modes, client);
+    ErrorMsgGenrator(":IRCserv.1337.ma 324 ", " " + chnl + " " + modes, client);
 }
 
 static void    modeSelector(queue<pair <bool, char> > &modesQueue, Channel* const channel, Client* const client, bool set, size_t &index, vector<string> arg)
@@ -267,7 +267,7 @@ void   Channel::modeCommand(vector<string> arg, Client* const client)
     queue<pair <bool, char> >   modesQueue;
 
     if (!arg.size())
-        return (printModes(privelege, *client));
+        return (printModes(privelege, this->name, *client));
 
     if (!this->isOperator(client))
         return (ErrorMsgGenrator(":IRCserv.1337.ma 482 ", this->getName() + " :You're not channel operator", *client));

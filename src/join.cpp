@@ -146,12 +146,6 @@ bool    Client::joinCommand(vector<string> join)
     queue<string>   channels;
     queue<string>   passwords;
 
-    if (!this->Regestred)
-    {
-        ErrorMsgGenrator(":IRCserv.1337.ma 451 ", " " + join[0] + " :You have not registered", *this);
-        return (false);
-    }
-
     joinParser(join, channels, passwords, *this);
 
     while (!channels.empty())
