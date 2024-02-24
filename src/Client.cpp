@@ -25,7 +25,6 @@ Client::Client(int ClntFd, in_addr *ClntAddr) : ClntFd(ClntFd), Regestred(false)
 	this->DoCmd["PING"] = static_cast<bool (Client::*)(vector<string>)>(&Client::Pong);
     this->HstName = inet_ntoa(*ClntAddr);
 }
-		// bool		   infoChannel(vector<string>);
 
 bool Client::pong(vector<string> cmd)
 {
@@ -93,7 +92,6 @@ bool	Client::anonyMsg(vector<string> cmd)
 {
 	if (cmd.size() == 3)
 	{
-		// cout << "here" << endl;
 		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
 		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
 		for (; it != ite; it++)
@@ -153,6 +151,12 @@ void    Client::setCmd(string line) {
     }
 }
 
+void Client::Welcome() {
+    ErrorMsgGenrator(":IRCserv.1337.ma 001 ", "Welcome to the KAMIKAZI Network, " + this->NckName, *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 002 ", "Your host is IRCserv.1337.ma, running version 0.1.0", *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 003 ", "This server was created " + localTime(time(0)), *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 004 ", " " + this->NckName + " IRCserv.1337.ma 0.1.0", *this);
+}
 
 /**
  * @brief Parses and executes the client command.
@@ -168,11 +172,8 @@ void    Client::setCmd(string line) {
 bool    Client::ParsAndExec() {
     bool rt;
 
-    if (!Server::getInstance()->isClient(this->ClntFd))
-        return false;
+    this->Cmd.clear();
     this->setCmd(this->Msg);
-    // for (size_t i = 0; i < this->Cmd.size(); i++)
-    //     cout << this->Cmd[i] << ((i + 1 != this->Cmd.size()) ? " | " : "\n");
     for (size_t i = 0; i < this->Cmd[0].size(); i++)
         if (isalpha(this->Cmd[0][i]) && islower(this->Cmd[0][i]))
             this->Cmd[0][i] = toupper(this->Cmd[0][i]);
@@ -182,15 +183,12 @@ bool    Client::ParsAndExec() {
         ErrorMsgGenrator("IRCserv.1337.ma 421 ", " " + this->Cmd[0] + " :Unknown command", *this);
         rt = false;
     }
-    if (!Server::getInstance()->isClient(this->ClntFd))
-        return false;
     if (!this->SrvPss.empty() && !this->NckName.empty() && !this->UsrName.empty()) {
         if (!this->Regestred)
-            Server::RegistMsgReply(*this);
+            this->Welcome();
         this->Regestred = true;
     }
     this->Msg = "";
-    this->Cmd.clear();
     return rt;
 }
 
@@ -228,16 +226,6 @@ bool    Client::QuitServer(vector<string> cmd) {
         cmd.push_back("");
     for (size_t i = 0; i < this->Chnls.size(); i++)
         SendMsg(*this, *Server::getInstance()->getChannels()[this->Chnls[i]], cmd[0], cmd[cmd.size()-1], "Quit");
-    //     vector<Client *> tmp = Server::getInstance()->getChannels()[this->Chnls[i]]->getMembers();
-    //     for (size_t j = 0; j < tmp.size(); j++) {
-    //         if ((tmp[j]->ClntFd != this->ClntFd && !VcFind(Friends, *tmp[j])))
-    //             Friends.push_back(*tmp[j]);
-    //     }
-    // }
-    // close(this->ClntFd);
-    // for (size_t i = 0; i < Friends.size(); i++)
-    //     SendMsg(*this, Friends[i], cmd[0], cmd[cmd.size()-1], "Quit");
-    Server::getInstance()->RemoveClient(this->ClntFd);
     return true;
 }
 
@@ -254,8 +242,7 @@ void    ErrorMsgGenrator(string const &Prefix, string const &Sufix, Client &Send
     string msg = Prefix + ((Sender.getNckName().empty()) ? "*" : Sender.getNckName())
                 + Sufix + "\r\n";
 
-    if (send(Sender.getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-        Server::getInstance()->RemoveClient(Sender.getClntFd());
+    send(Sender.getClntFd(), msg.c_str(), msg.size(), 0);
 }
 
 
@@ -299,16 +286,7 @@ void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string cons
 
     for (size_t i = 0; i < Reciver.getMembers().size(); i++)
         send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0);
-        // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
 }
-void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg) {
-    string msg = ":" + Sender.getNckName() + "!" + Sender.getRlName()
-                + "@" + Sender.getHstName() + " " + Cmd + " " + Trg
-                + ((Msg.empty()) ? "\r\n" : " " + Msg + "\r\n");
 
-    for (size_t i = 0; i < Reciver.getMembers().size(); i++)
-        send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0);
-        // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
-}
 
 

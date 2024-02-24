@@ -83,7 +83,6 @@ void    Channel::removeOperator(Client* const op)
 {
     try
     {
-        // VcRemove(this->operators, op);
         vector<Client *>::iterator it = this->operators.begin();
         for (; it != this->operators.end(); it++)
             if ((*it)->getClntFd() == op->getClntFd())
@@ -144,7 +143,6 @@ void    Channel::setOperator(Client* const client)
     try
     {
         this->addOperator(client);
-        // this->removeMember(client);
     }
     catch(const std::exception& e)
     {
@@ -156,7 +154,6 @@ void    Channel::unsetOperator(Client* const client)
 {
     try
     {
-        // this->addMember(client);
         this->removeOperator(client);
     }
     catch(const std::exception& e)
@@ -174,9 +171,6 @@ void    Channel::kickUser(Client* const admin, Client* const user)
             this->removeMember(user);
             this->removeOperator(user);
         }
-        // if (this->isOperator(admin) && this->isOperator(user))
-        // {
-        // }
     }
     catch(const std::exception& e)
     {

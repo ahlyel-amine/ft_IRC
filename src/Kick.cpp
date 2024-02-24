@@ -6,11 +6,8 @@
  * @param cmd The command containing the channel name and the nickname of the client to be kicked.
  * @return True if the client was successfully kicked, false otherwise.
  */
-// :lmcht!~lmcht@197.230.30.146 KICK #chila lola :bye
-// :lmcht!~lmcht@127.0.0.1 KICK #a :nc :bye
+
 bool    Client::Kick(vector<string> cmd) {
-    // for (size_t i = 0; i < cmd.size(); i++)
-    //     cout << "[" + cmd[i] + "]" << endl;
     if (cmd.size() == 4 || cmd.size() == 3){
         if (Server::getInstance()->getChannels().find(cmd[1]) != Server::getInstance()->getChannels().end()) {
             Channel *chnl = Server::getInstance()->getChannels()[cmd[1]];
@@ -29,9 +26,9 @@ bool    Client::Kick(vector<string> cmd) {
                         return false;
                     }
                     if (cmd.size() == 3)
-                        SendMsg1(*this, *chnl, cmd[0], " " , cmd[1] + " " + cmd[2]);
+                        SendMsg(*this, *chnl, cmd[0], " " , cmd[1] + " " + cmd[2]);
                     else
-                        SendMsg1(*this, *chnl, cmd[0], cmd[3] , cmd[1] + " " + cmd[2]);
+                        SendMsg(*this, *chnl, cmd[0], cmd[3] , cmd[1] + " " + cmd[2]);
                     VcRemove((*it)->Chnls, cmd[1]);
                     chnl->kickUser(this, *it);
                     if (chnl->getMembers().empty()) {

@@ -27,7 +27,6 @@ class Channel
     
     public :
     Channel(){};
-        // void    autoAssignAdmin();
 
         void    addMember(Client* const);
         void    addOperator(Client* const);

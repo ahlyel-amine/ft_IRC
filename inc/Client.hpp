@@ -53,6 +53,7 @@ class Client {
 		const string   &getHstName(void) const {return this->HstName;}
 		const string   &getRlName(void) const {return this->RlName;}
 		vector<string> &getChnls(void) {return this->Chnls;}
+		string		   getCmd(void) {return this->Cmd[0];}
         /****************************/
         /*         [SETTERS]        */
 		void		   setCmd(string);
@@ -83,6 +84,7 @@ class Client {
 			cout << vc[0] << endl;
 			return true;
 		}
+		void		   Welcome();
 		/****************************/
         /*        [Client Action Utils]       */
 		void	sendClientMsg(string&, vector<string>&);
@@ -98,6 +100,6 @@ class Client {
 void    ErrorMsgGenrator(string const &Prefix, string const &Sufix, Client &Sender);
 void	SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const &Msg, string const &Trg);
 void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
-void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
+void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg);
 vector<string> getTargets(string, char);
 typedef bool (Client::*topControl[])(vector<string>& cmd);
