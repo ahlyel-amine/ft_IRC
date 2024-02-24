@@ -78,6 +78,7 @@ class Client {
 		bool		   Kick(vector<string>);
 		bool		   pong(vector<string>);
 		bool		   Topic(vector<string>);
+		bool		   getDate(vector<string>);
 		bool		   Pong(vector<string> vc) {
 			// (void)vc;
 			cout << vc[0] << endl;

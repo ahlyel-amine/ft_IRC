@@ -26,7 +26,7 @@ class Channel;
 
 class Client;
 
-#define SERVER_NAME "IRCserv.1337.ma "
+#define SERVER_NAME "IRCserv.1337.ma"
 #define VERSION "1.0"
 
 #define max_connection 128
@@ -41,13 +41,15 @@ class Client;
 
 class Server {
     private:
-        int                 SockFd;     // File discriptor of the server socket
-        static Server       *Instance;  // This pointer will make the class have only one inctance
-        string              Pswd;       // This string represent the password the client shold provide to log to the server
-		string				LocalTime;  // The local time of creating the server
-        vector<pollfd>      ClFds;      // This vector will hold an array of the struct used to send to poll() function
-        map<int, Client>    Clients;    // A map of Clients of which the key is the client SocketFd and the value is the Client
-        map<string, Channel*>    Channels;    // A map of Clients of which the key is the client SocketFd and the value is the Client
+        int						SockFd;		// File discriptor of the server socket
+		bool					isConnected;
+        static Server			*Instance;	// This pointer will make the class have only one inctance
+        string					Pswd;		// This string represent the password the client shold provide to log to the server
+		string					Lport;		// The Server Listenning port
+		string					LocalTime;	// The local time of creating the server
+        vector<pollfd>			ClFds;		// This vector will hold an array of the struct used to send to poll() function
+        map<int, Client>		Clients;	// A map of Clients of which the key is the client SocketFd and the value is the Client
+        map<string, Channel*>	Channels;	// A map of Clients of which the key is the client SocketFd and the value is the Client
 
         /*[Constructers and operatores overload]*/
         Server(const Server &obj) {*this=obj;}
@@ -91,6 +93,7 @@ class Server {
         static string           Welcome();
 		static void			    RegistMsgReply( const Client& );
 		void				    BroadCastMsg( const Client& reciever, const stringstream& msg ) const;
+		void					SocketListen( void );
 };
 
 template <typename T>
