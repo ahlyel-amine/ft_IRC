@@ -7,12 +7,35 @@ BtcPrice::BtcPrice(std::string host, std::string port, std::string pass, BotType
 
 BtcPrice& BtcPrice::operator=( const BtcPrice& ) { return *this; }
 
+std::string	localTime(time_t now)
+{
+	std::string t = ctime(&now);
+	t.erase(t.size() - 1);
+	return (t);
+}
 
-size_t WriteCallback(void* contents, size_t size, size_t nmemb, std::string* response) {
+std::string	localPtime( void )
+{
+	time_t				now = time(0);
+	tm					*ltm = localtime(&now);
+	std::stringstream	date;
+	ltm->tm_year += 1900;
+	ltm->tm_mon += 1;
+	date << ":" << ltm->tm_year 
+	<< "-"<< ltm->tm_mon 
+	<< "-"<< ltm->tm_mday 
+	<< " "<< ltm->tm_hour 
+	<< "-" << ltm->tm_min << "-" 
+	<< ltm->tm_sec;
+	return (date.str());
+}
+
+size_t replayCallBack(void* contents, size_t size, size_t nmemb, std::string* response) {
     size_t total_size = size * nmemb;
     response->append((char*)contents, total_size);
     return total_size;
 }
+
 void	parseApiReplay(std::string& response)
 {
 	response.erase(0, response.find("rate_float") + 12);
@@ -26,7 +49,7 @@ std::string getBtcPrice()
 	if (curl)
 	{
 		curl_easy_setopt(curl, CURLOPT_URL, BTCAPI);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, replayCallBack);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response_data);
 
 		res = curl_easy_perform(curl);
@@ -43,15 +66,19 @@ void			BtcPrice::botReply(std::string msg)
 {
 	std::string	cmd, nick, Msg, botName;
 	std::stringstream	ss(msg);
+	std::string finalMsg;
 	int sendBytes;
 	if (msg.size() <= 2)
 		return;
 	msg.erase(msg.size() - 2);
 	ss >> nick >> cmd >> botName >> Msg;
-	if (cmd != "BTCPRICE")
+	if (cmd != "BTCPRICE" && cmd != "DATE")
 		return;
 	nick = extractNick(msg);
-	std::string finalMsg = static_cast<std::string>("PRIVMSG") + " " + nick + " " + getBtcPrice() + "\r\n";
+	if (cmd == "BTCPRICE")
+		finalMsg = static_cast<std::string>("PRIVMSG") + " " + nick + " " + getBtcPrice() + "\r\n";
+	else
+		finalMsg = static_cast<std::string>("PRIVMSG") + " " + nick + " :" + localTime(time(0)) + "\r\n";
 	if ((sendBytes = send(this->getSocketFd(), finalMsg.c_str(), finalMsg.size(), 0)) <= 0)
 	{	if (sendBytes == 0)
 			std::cerr << "Connection closed" << std::endl;
