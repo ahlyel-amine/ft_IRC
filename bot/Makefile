@@ -6,7 +6,7 @@
 #    By: aelbrahm <aelbrahm@student.1337.ma>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/03 15:57:19 by aelbrahm          #+#    #+#              #
-#    Updated: 2024/02/23 02:33:28 by aelbrahm         ###   ########.fr        #
+#    Updated: 2024/02/24 11:37:28 by aelbrahm         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,7 +33,7 @@ NAME = bin/ircbot
 OBJS = $(addprefix obj/, $(OBJS_O))
 DIR = bin obj
 RM = rm -rf
-HEADRES = Bot.hpp BtcPrice.hpp
+HEADRES = Bot.hpp
 
 #================================#
 #            RULES               #
