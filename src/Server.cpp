@@ -32,7 +32,7 @@ void Server::SetSockFd(string &port) {
     hnt.ai_family = AF_INET;
     hnt.ai_protocol = IPPROTO_TCP;
     hnt.ai_socktype = SOCK_STREAM;
-    int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), opt_val = 1;
+    int status = getaddrinfo(NULL, port.c_str(), &hnt, &ptr), enable = 1;
     if (status) {
         cerr << "Getting Address Info : " << gai_strerror(status) << endl;
         exit(1);
@@ -41,7 +41,12 @@ void Server::SetSockFd(string &port) {
         this->SockFd = socket(tmp->ai_family, tmp->ai_socktype, tmp->ai_protocol);
         if (this->SockFd < 0)
             continue;
-        setsockopt(this->SockFd, SOL_SOCKET, SO_REUSEADDR, &opt_val, sizeof(opt_val));
+        if (setsockopt(this->SockFd, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof enable) == -1)
+		{
+		    freeaddrinfo(ptr);
+			close(this->SockFd);
+			throw std::runtime_error(strerror(errno));
+		}
         if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen))
         {
             close(this->SockFd);
@@ -51,10 +56,10 @@ void Server::SetSockFd(string &port) {
     }
     freeaddrinfo(ptr);
     if (!tmp) {
-        cerr << "Binding The Socket : " << strerror(errno) << endl;
         close(this->SockFd);
-        exit(1);
+        throw std::runtime_error("Error: Could not Bind the socket");
     }
+	this->isConnected = true;
 }
 
 /*
@@ -65,6 +70,22 @@ void Server::SetSockFd(string &port) {
     an error is getting printed discribing
     what happend
 */
+void	Server::SocketListen( void )
+{
+	if (!this->isConnected){
+		Instance->SetSockFd(this->Lport);
+		fcntl(Instance->SockFd, F_SETFD, O_NONBLOCK);
+			
+		if (listen(Instance->SockFd, max_connection)) {
+			close(Instance->SockFd);
+			throw std::runtime_error(strerror(errno));
+		}
+		Instance->ClFds.push_back(pollfd());
+		Instance->ClFds.back().fd = Instance->SockFd;
+		Instance->ClFds.back().events = POLLIN;
+	}
+	return ;
+}
 Server *Server::InstanceServer(string &port, string &psw) {
     if (!Instance) {
         Instance = new Server();
@@ -72,17 +93,9 @@ Server *Server::InstanceServer(string &port, string &psw) {
             cerr << "Invalid Argument: " << (!psw.empty() ? "The port must contain only numbers." : "Empty Password.") << endl;
             exit(1);
         }
-        Instance->SetSockFd(port);
-        fcntl(Instance->SockFd, F_SETFD, O_NONBLOCK);
-        Instance->Pswd = psw;
-        if (listen(Instance->SockFd, max_connection)) {
-            cerr << "Listening : " << strerror(errno) << endl;
-            close(Instance->SockFd);
-            exit(1);
-        }
-        Instance->ClFds.push_back(pollfd());
-        Instance->ClFds.back().fd = Instance->SockFd;
-        Instance->ClFds.back().events = POLLIN;
+        Instance->Lport = port;
+		Instance->Pswd = psw;
+		Instance->isConnected = false;
 		Instance->LocalTime = localTime(time(0));
     }
     return Instance;
@@ -109,10 +122,12 @@ string Server::Welcome() {
     according to which file
 */
 void Server::launchServer() {
-    int count = poll(&this->ClFds[0], this->ClFds.size(), 0);
+    int count;
+	this->SocketListen();
+	count = poll(&this->ClFds[0], this->ClFds.size(), 0);
     if (count < 0) {
-        cerr << "Poll() function : " << strerror(errno) << endl;
-        // exit(1);
+		close(this->SockFd);
+        throw std::runtime_error(strerror(errno));
     }
     for (size_t i = 0; i < this->ClFds.size(); i++)
         if (this->ClFds[i].revents & POLLIN)
@@ -141,10 +156,6 @@ bool Server::JoinServer() {
     this->ClFds.push_back(pollfd());
     this->ClFds.back().fd = ClntFd;
     this->ClFds.back().events = POLLIN;
-    // map<int, Client>::iterator it = this->Clients.begin();
-    // cout << "\t---|Clients List|---" << endl;
-    // for (;it != this->Clients.end(); it++)
-    //     cout << "Client:[" << it->second.getNckName() << "]in machine:[" << it->second.getHstName() << "] using socket[" << it->first <<"]" << endl;
     return true;
 }
 
@@ -184,76 +195,24 @@ bool Server::ReplyToClient(Client &Clnt) {
     char    Buff[3000];
     memset(Buff, 0, 3000);
     int val = recv(Clnt.getClntFd(), Buff, 3000, 0);
-    // cout << "       buff :: \'"<< Buff <<"\'"<< endl;
     if (val > 0 && strlen(Buff)) {
         string Msg(Buff);
         Clnt.getBff() += Msg;
-	    // cout << "val: " << Msg << "{}" << endl;
         if (Clnt.getBff().find('\n') == string::npos)
             return true;
-        // Msg.erase(Clnt.getMsg().size() - 2);
         Msg.erase(0, Msg.find_first_not_of(" \t\n\v\f\r"));
-        // cout << Msg << endl;
-		// cout << "ClinetRequest from[" << Clnt.getHstName() << "]: " << Msg << endl;
-		return BufferFeed(Clnt, Clnt.getBff());
-			// return Clnt.ParsAndExec();
-        // return (Clnt.getMsg().empty()) ? true : Clnt.ParsAndExec();
-    }
-    // else if (!val)
-    // {
-    //     map<string, Channel*>                &Channels =  Server::getInstance()->getChannels();
-    //     int fd = Clnt.getClntFd();
-    //     (void)fd;
 
-    //     for (size_t i = 0; i < Clnt.getChnls().size(); i++)
-    //     {
-    //         string msg = ":" + Clnt.getNckName()+ "!" + Clnt.getUsrName() + "@" + Clnt.getHstName() + " PART " + Clnt.getChnls()[i] + "\r\n";
-    //         for (size_t j = 0; j < Channels.find(Clnt.getChnls()[i])->second->getMembers().size(); j++)
-    //         {
-    //             if (Channels.find(Clnt.getChnls()[i])->second->getMembers()[j]->getClntFd() != Clnt.getClntFd())
-    //                 send(Channels.find(Clnt.getChnls()[i])->second->getMembers()[j]->getClntFd(), msg.c_str(), msg.size(), 0);
-    //         }
-    //         Channels[Clnt.getChnls()[i]]->removeMember(&Clnt);
-    //         Channels[Clnt.getChnls()[i]]->removeOperator(&Clnt);
-    //     }
-    //     for (size_t i = 0; i < this->ClFds.size(); i++)
-    //     {
-    //         if (this->ClFds[i].fd == fd)
-    //             this->ClFds.erase(this->ClFds.begin() + i);
-    //     }
-    // }
-    // else
+		return BufferFeed(Clnt, Clnt.getBff());
+
+    }
+
 	cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
-    // this->RemoveClient(Clnt.getClntFd());
     vector<string> vc;
     vc.push_back("QUIT");
     Clnt.QuitServer(vc);
     return false;
 }
-/*
-    Taking the incomming message form
-    the client and and behaving acordding
-    to what does he sent otherwise an error
-    discribing the problem is printed
-*/
-// bool Server::ReplyToClient(Client &Clnt) {
-//     char    Buff[3000];
-//     memset(Buff, 0, 3000);
-//     int val = recv(Clnt.getClntFd(), Buff, 3000, 0);
-//     if (val > 0 && strlen(Buff)) {
-//         string Msg(Buff);
-//         Clnt.getMsg() += Msg;
-//         if (Clnt.getMsg().find('\n') == string::npos)
-//             return true;
-//         // Clnt.getMsg().erase(Clnt.getMsg().size() - 2);
-//         Clnt.getMsg().erase(0, Clnt.getMsg().find_first_not_of(" \t\n\v\f\r"));
-//         cout << "ClinetRequest from[" << Clnt.getHstName() << "]: " << Clnt.getMsg() << endl;
-//         return (Clnt.getMsg().empty()) ? true : Clnt.ParsAndExec();
-//     }
-//     cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
-//     this->RemoveClient(Clnt.getClntFd());
-//     return false;
-// }
+
 
 void    Server::RemoveClient(int fd) {
     for (size_t i = 0; i < this->ClFds.size(); i++) {
