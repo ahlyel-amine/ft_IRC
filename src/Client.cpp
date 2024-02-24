@@ -168,6 +168,8 @@ void    Client::setCmd(string line) {
 bool    Client::ParsAndExec() {
     bool rt;
 
+    if (!Server::getInstance()->isClient(this->ClntFd))
+        return false;
     this->setCmd(this->Msg);
     // for (size_t i = 0; i < this->Cmd.size(); i++)
     //     cout << this->Cmd[i] << ((i + 1 != this->Cmd.size()) ? " | " : "\n");
@@ -180,6 +182,8 @@ bool    Client::ParsAndExec() {
         ErrorMsgGenrator("IRCserv.1337.ma 421 ", " " + this->Cmd[0] + " :Unknown command", *this);
         rt = false;
     }
+    if (!Server::getInstance()->isClient(this->ClntFd))
+        return false;
     if (!this->SrvPss.empty() && !this->NckName.empty() && !this->UsrName.empty()) {
         if (!this->Regestred)
             Server::RegistMsgReply(*this);
@@ -222,17 +226,18 @@ bool    Client::QuitServer(vector<string> cmd) {
 
     if (cmd.size() == 1)
         cmd.push_back("");
-    for (size_t i = 0; i < this->Chnls.size(); i++) {
-        vector<Client *> tmp = Server::getInstance()->getChannels()[this->Chnls[i]]->getMembers();
-        for (size_t j = 0; j < tmp.size(); j++) {
-            if ((!Friends.empty() || !VcFind(Friends, *tmp[j])))
-                Friends.push_back(*tmp[j]);
-        }
-    }
-    close(this->ClntFd);
-    for (size_t i = 0; i < Friends.size(); i++)
-        SendMsg(*this, Friends[i], cmd[0], cmd[cmd.size()-1], "Quit");
-    // Server::getInstance()->RemoveClient(this->ClntFd);
+    for (size_t i = 0; i < this->Chnls.size(); i++)
+        SendMsg(*this, *Server::getInstance()->getChannels()[this->Chnls[i]], cmd[0], cmd[cmd.size()-1], "Quit");
+    //     vector<Client *> tmp = Server::getInstance()->getChannels()[this->Chnls[i]]->getMembers();
+    //     for (size_t j = 0; j < tmp.size(); j++) {
+    //         if ((tmp[j]->ClntFd != this->ClntFd && !VcFind(Friends, *tmp[j])))
+    //             Friends.push_back(*tmp[j]);
+    //     }
+    // }
+    // close(this->ClntFd);
+    // for (size_t i = 0; i < Friends.size(); i++)
+    //     SendMsg(*this, Friends[i], cmd[0], cmd[cmd.size()-1], "Quit");
+    Server::getInstance()->RemoveClient(this->ClntFd);
     return true;
 }
 
@@ -269,8 +274,7 @@ void    SendMsg(Client &Sender, Client &Reciver, string const &Cmd, string const
                 + "@" + Sender.getHstName() + " " + Cmd + " " + Trg
                 + ((Msg.empty()) ? "\r\n" : " :" + Msg + "\r\n");
 
-    if (send(Reciver.getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-        Server::getInstance()->RemoveClient(Reciver.getClntFd());
+    send(Reciver.getClntFd(), msg.c_str(), msg.size(), 0);
 }
 
 
@@ -294,8 +298,7 @@ void    SendMsg(Client &Sender, Channel &Reciver, string const &Cmd, string cons
                 + ((Msg.empty()) ? "\r\n" : " :" + Msg + "\r\n");
 
     for (size_t i = 0; i < Reciver.getMembers().size(); i++)
-        if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-            Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0);
         // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
 }
 void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string const &Msg, string const &Trg) {
@@ -304,8 +307,7 @@ void    SendMsg1(Client &Sender, Channel &Reciver, string const &Cmd, string con
                 + ((Msg.empty()) ? "\r\n" : " " + Msg + "\r\n");
 
     for (size_t i = 0; i < Reciver.getMembers().size(); i++)
-        if (send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0) < 0)
-            Server::getInstance()->RemoveClient(Reciver.getMembers()[i]->getClntFd());
+        send(Reciver.getMembers()[i]->getClntFd(), msg.c_str(), msg.size(), 0);
         // if (Sender.getClntFd() != Reciver.getMembers()[i]->getClntFd())
 }
 
