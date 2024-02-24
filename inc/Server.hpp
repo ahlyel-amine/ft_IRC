@@ -109,3 +109,5 @@ void VcRemove(vector<T> &vc, T trg) {
     if (i != vc.size())
         vc.erase(vc.begin() + i);
 }
+
+string localTime(time_t);

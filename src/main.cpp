@@ -19,8 +19,8 @@ int main(int ac, char **av) {
         cout << "\t\t[Server Started]" << endl << "Port: " << prt << endl;
         while (!interpted)
             srv->launchServer();
-        while (!srv->getClients().empty())
-            srv->RemoveClient(srv->getClients().begin()->first);
+        // while (!srv->getClients().empty())
+        //     srv->RemoveClient(srv->getClients().begin()->first);
         close(srv->getSockFd());
         system("leaks ircserv");
     }

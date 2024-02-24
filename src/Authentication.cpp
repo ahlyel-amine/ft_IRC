@@ -24,11 +24,11 @@ bool    Client::setNckName(vector<string> cmd)
                 if (!isalnum(cmd[1].at(i)) && allowed.find(cmd[1].at(i)) == string::npos)
                     break ;
             if (i != cmd[1].size())
-                ErrorMsgGenrator("IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
+                ErrorMsgGenrator(":IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
             else {
 				// cout << "NICKNAME: " << cmd[1] << endl;
                 if (Server::getInstance()->getClientByNckName(cmd[1]) > 0)
-                    ErrorMsgGenrator("IRCserv.1337.ma 433 ", " :Nickname is already in use", *this);
+                    ErrorMsgGenrator(":IRCserv.1337.ma 433 ", " :Nickname is already in use", *this);
                 else {
                     this->NckName = cmd[1];
                     return true;
@@ -36,10 +36,10 @@ bool    Client::setNckName(vector<string> cmd)
             }
         }
         else
-            ErrorMsgGenrator("IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
+            ErrorMsgGenrator(":IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
     }
     else
-        ErrorMsgGenrator("IRCserv.1337.ma 431 ", " :No nickname given", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 431 ", " :No nickname given", *this);
     return (false);
 }
 
@@ -64,10 +64,10 @@ bool		  Client::setUsrName(vector<string> cmd)
             return true;
         }
         else
-            ErrorMsgGenrator("IRCserv.1337.ma 462 ", " :You may not reregister", *this);
+            ErrorMsgGenrator(":IRCserv.1337.ma 462 ", " :You may not reregister", *this);
     }
     else
-        ErrorMsgGenrator("IRCserv.1337.ma 461 ", " " + cmd[0] +" :Not enough parameters", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] +" :Not enough parameters", *this);
     return (false);
 }
 
@@ -90,15 +90,15 @@ bool		  Client::setSrvPss(vector<string> cmd)
 {
     if (cmd.size() == 2) {
         if (this->Regestred)
-            ErrorMsgGenrator("IRCserv.1337.ma 462 ", " :You may not reregister", *this);
+            ErrorMsgGenrator(":IRCserv.1337.ma 462 ", " :You may not reregister", *this);
         else if(Server::getInstance()->getPswd() == cmd[1]) {
             this->SrvPss = cmd[1];
             return true;
         }
         else
-            ErrorMsgGenrator("IRCserv.1337.ma 464 ", " :Password incorrect", *this);
+            ErrorMsgGenrator(":IRCserv.1337.ma 464 ", " :Password incorrect", *this);
     }
     else
-        ErrorMsgGenrator("IRCserv.1337.ma 461 ", " " + cmd[0] + " :Not enough parameters", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + " :Not enough parameters", *this);
     return (false);
 }

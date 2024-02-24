@@ -16,10 +16,10 @@ bool	Client::anonyMsg(vector<string> cmd)
 		switch (failReplay)
 		{
 			case 1:
-				ErrorMsgGenrator("IRCserv.1337.ma 412 ", " :No text to send", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 412 ", " :No text to send", *this);
 				break;
 			case 2:
-				ErrorMsgGenrator("IRCserv.1337.ma 411 ", " :No recipient given", *this);
+				ErrorMsgGenrator(":IRCserv.1337.ma 411 ", " :No recipient given", *this);
 				break;
 		}
 	}

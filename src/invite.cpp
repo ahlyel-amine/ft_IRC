@@ -5,7 +5,7 @@ void   Channel::inviteCommand(vector<string> arg, Client* const client)
 {
     if (!this->isOperator(client))
     {
-        ErrorMsgGenrator("IRCserv.1337.ma 482 ", " " + arg[2] + " :You're not channel operator", *client);
+        ErrorMsgGenrator(":IRCserv.1337.ma 482 ", " " + arg[2] + " :You're not channel operator", *client);
         return ;
     }
 
@@ -36,13 +36,13 @@ bool Client::inviteCommand(vector<string> cmd)
 
     if (!srv->isClient(cmd[1]))
     {
-        ErrorMsgGenrator("IRCserv.1337.ma 401 ", "INVITE :No such nick", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 401 ", "INVITE :No such nick", *this);
         return (false);
     }
 
     if (!srv->isChannel(cmd[2]))
     {
-        ErrorMsgGenrator("IRCserv.1337.ma 403 ", "INVITE :No such channel", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 403 ", "INVITE :No such channel", *this);
         return (false);
     }
 

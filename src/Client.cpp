@@ -152,10 +152,10 @@ void    Client::setCmd(string line) {
 }
 
 void Client::Welcome() {
-    ErrorMsgGenrator(":IRCserv.1337.ma 001 ", "Welcome to the KAMIKAZI Network, " + this->NckName, *this);
-    ErrorMsgGenrator(":IRCserv.1337.ma 002 ", "Your host is IRCserv.1337.ma, running version 0.1.0", *this);
-    ErrorMsgGenrator(":IRCserv.1337.ma 003 ", "This server was created " + localTime(time(0)), *this);
-    ErrorMsgGenrator(":IRCserv.1337.ma 004 ", " " + this->NckName + " IRCserv.1337.ma 0.1.0", *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 001 ", " Welcome to the KAMIKAZI Network, " + this->NckName, *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 002 ", " Your host is IRCserv.1337.ma, running version 0.1.0", *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 003 ", " This server was created " + localTime(time(0)), *this);
+    ErrorMsgGenrator(":IRCserv.1337.ma 004 ", " IRCserv.1337.ma 0.1.0", *this);
 }
 
 /**
@@ -180,7 +180,7 @@ bool    Client::ParsAndExec() {
     if (this->DoCmd.find(this->Cmd[0]) != this->DoCmd.end())
         rt = (this->*DoCmd[this->Cmd[0]])(this->Cmd);
     else {
-        ErrorMsgGenrator("IRCserv.1337.ma 421 ", " " + this->Cmd[0] + " :Unknown command", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 421 ", " " + this->Cmd[0] + " :Unknown command", *this);
         rt = false;
     }
     if (!this->SrvPss.empty() && !this->NckName.empty() && !this->UsrName.empty()) {
