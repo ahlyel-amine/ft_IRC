@@ -19,6 +19,17 @@ int Server::getClientByNckName(string &NckName) {
     return -1;
 }
 
+Server::~Server() {
+    for (map<string, Channel*>::iterator it = this->Channels.begin(); it != this->Channels.end(); it++)
+        delete it->second;
+    this->Channels.clear();
+    for (map<int, Client>::iterator it = this->Clients.begin(); it != this->Clients.end(); it++)
+        close(it->first);
+    this->Clients.clear();
+    this->ClFds.clear();
+    close(this->SockFd);
+}
+
 /*
     This member function open a socket
     for the server and bind it otherwise
@@ -28,17 +39,18 @@ int Server::getClientByNckName(string &NckName) {
 */
 void Server::SetSockFd(string &port) {
     struct addrinfo *ptr, *tmp, hnt;
+    char    str[256];
+    
+    if (gethostname(str, sizeof(str)) < 0) {
+        cerr << "Getting Host Name : " << strerror(errno) << endl;
+        exit(1);
+    }
     memset(&hnt, 0, sizeof(hnt));
-    // char    str[256];
-    // if (gethostname(str, sizeof(str)) < 0) {
-    //     cerr << "Getting Host Name : " << strerror(errno) << endl;
-    //     exit(1);
-    // }
     hnt.ai_family = AF_INET;
     hnt.ai_protocol = IPPROTO_TCP;
     hnt.ai_socktype = SOCK_STREAM;
-    int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), opt_val = 1;
-    // int status = getaddrinfo(str, port.c_str(), &hnt, &ptr), opt_val = 1;
+    // int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), opt_val = 1;
+    int status = getaddrinfo(str, port.c_str(), &hnt, &ptr), opt_val = 1;
     if (status) {
         cerr << "Getting Address Info : " << gai_strerror(status) << endl;
         exit(1);
@@ -202,30 +214,6 @@ bool Server::ReplyToClient(Client &Clnt) {
     this->RemoveClient(Clnt.getClntFd());
     return false;
 }
-/*
-    Taking the incomming message form
-    the client and and behaving acordding
-    to what does he sent otherwise an error
-    discribing the problem is printed
-*/
-// bool Server::ReplyToClient(Client &Clnt) {
-//     char    Buff[3000];
-//     memset(Buff, 0, 3000);
-//     int val = recv(Clnt.getClntFd(), Buff, 3000, 0);
-//     if (val > 0 && strlen(Buff)) {
-//         string Msg(Buff);
-//         Clnt.getMsg() += Msg;
-//         if (Clnt.getMsg().find('\n') == string::npos)
-//             return true;
-//         // Clnt.getMsg().erase(Clnt.getMsg().size() - 2);
-//         Clnt.getMsg().erase(0, Clnt.getMsg().find_first_not_of(" \t\n\v\f\r"));
-//         cout << "ClinetRequest from[" << Clnt.getHstName() << "]: " << Clnt.getMsg() << endl;
-//         return (Clnt.getMsg().empty()) ? true : Clnt.ParsAndExec();
-//     }
-//     cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
-//     this->RemoveClient(Clnt.getClntFd());
-//     return false;
-// }
 
 void    Server::RemoveClient(int fd) {
     for (size_t i = 0; i < this->ClFds.size(); i++) {

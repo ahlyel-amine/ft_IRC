@@ -7,7 +7,7 @@ void hundl(int) {interpted = true;}
 void f(void){system("lsof -c ircserv");}
 
 int main(int ac, char **av) {
-    // atexit(f);
+    atexit(f);
     if(ac == 3) {
         signal(SIGINT, hundl);
         signal(SIGPIPE, SIG_IGN);
@@ -19,9 +19,7 @@ int main(int ac, char **av) {
         cout << "\t\t[Server Started]" << endl << "Port: " << prt << endl;
         while (!interpted)
             srv->launchServer();
-        // while (!srv->getClients().empty())
-        //     srv->RemoveClient(srv->getClients().begin()->first);
-        close(srv->getSockFd());
+        delete srv;
         system("leaks ircserv");
     }
     else {
