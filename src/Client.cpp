@@ -23,7 +23,8 @@ Client::Client(int ClntFd, in_addr *ClntAddr) : ClntFd(ClntFd), Regestred(false)
 	this->DoCmd["INVITE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::inviteCommand);
 	this->DoCmd["INFOC"] = static_cast<bool (Client::*)(vector<string>)>(&Client::infoChannel);
 	this->DoCmd["PING"] = static_cast<bool (Client::*)(vector<string>)>(&Client::Pong);
-    this->HstName = inet_ntoa(*ClntAddr);
+    this->DoCmd["DATE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::getDate);
+	this->HstName = inet_ntoa(*ClntAddr);
 }
 		// bool		   infoChannel(vector<string>);
 
@@ -88,6 +89,24 @@ bool Client::infoChannel(vector<string> cmd)
     return true;
 }
 
+bool	Client::getDate(vector<string> cmd) {
+	
+	if (cmd.size() == 1 && cmd[0] == "DATE")
+	{
+		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
+		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
+		for (; it != ite; it++)
+			if (it->second.getNckName() == "btcPrice")
+				break;
+		if (it != ite)
+			SendMsg(*this, it->second, cmd[0], "DATE ", ":Current time");
+		else
+			cerr << "BTCPRICE BOT is currently out of service" << endl;
+		return true;
+	}
+	cerr << "BTCPRICE: Invalid command forma" << endl;
+	return false;
+}
 
 bool	Client::anonyMsg(vector<string> cmd)
 {
