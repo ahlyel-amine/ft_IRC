@@ -45,12 +45,13 @@ void	Client::sendChannelMsg(string& target, vector<string>& cmd)
 	{
 		if (find(this->Chnls.begin(), this->Chnls.end(), target) != this->Chnls.end())
 		{
-			vector<Client *> &channelMembers = Server::getInstance()->getChannels()[target]->getMembers();
-			for (uint16_t j = 0; j < channelMembers.size(); ++j)
-			{
-				if (channelMembers[j]->ClntFd != this->ClntFd)
-					SendMsg(*this, *channelMembers[j], cmd[0], cmd[2], target);
-			}
+			// vector<Client *> &channelMembers = Server::getInstance()->getChannels()[target]->getMembers();
+			// for (uint16_t j = 0; j < channelMembers.size(); ++j)
+			// {
+			// 	if (channelMembers[j]->ClntFd != this->ClntFd)
+			// 		SendMsg(*this, *channelMembers[j], cmd[0], cmd[2], target);
+			// }
+			SendMsg(*this, *Server::getInstance()->getChannel(target), cmd[0], cmd[2], target);
 		}
 		else
 			ErrorMsgGenrator(":IRCserv.1337.ma 404 ", " " + target + " :Cannot send to channel", *this);

@@ -26,10 +26,11 @@ bool    Client::setNckName(vector<string> cmd)
             if (i != cmd[1].size())
                 ErrorMsgGenrator(":IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
             else {
-				// cout << "NICKNAME: " << cmd[1] << endl;
-                if (Server::getInstance()->getClientByNckName(cmd[1]) > 0)
+				if (Server::getInstance()->getClientByNckName(cmd[1]) > 0)
                     ErrorMsgGenrator(":IRCserv.1337.ma 433 ", " :Nickname is already in use", *this);
                 else {
+                    for (size_t i = 0; i < this->Chnls.size(); i++)
+                        SendMsg(*this, *Server::getInstance()->getChannel(this->Chnls[i]), cmd[0], this->Chnls[i], cmd[1]);
                     this->NckName = cmd[1];
                     return true;
                 }
@@ -38,8 +39,10 @@ bool    Client::setNckName(vector<string> cmd)
         else
             ErrorMsgGenrator(":IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
     }
-    else
+    else if (cmd.size() < 2)
         ErrorMsgGenrator(":IRCserv.1337.ma 431 ", " :No nickname given", *this);
+    else
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + " :To much parameters", *this);
     return (false);
 }
 
@@ -67,7 +70,7 @@ bool		  Client::setUsrName(vector<string> cmd)
             ErrorMsgGenrator(":IRCserv.1337.ma 462 ", " :You may not reregister", *this);
     }
     else
-        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] +" :Not enough parameters", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + ((cmd.size() < 5) ? " :Not enough parameters" : " :Too much parameters"), *this);
     return (false);
 }
 
@@ -99,6 +102,6 @@ bool		  Client::setSrvPss(vector<string> cmd)
             ErrorMsgGenrator(":IRCserv.1337.ma 464 ", " :Password incorrect", *this);
     }
     else
-        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + " :Not enough parameters", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + ((cmd.size() < 2) ? " :Not enough parameters" : " :Too much parameters"), *this);
     return (false);
 }

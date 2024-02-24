@@ -53,7 +53,7 @@ bool    Client::Kick(vector<string> cmd) {
         }
     }
     else {
-        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + " :Not enough parameters", *this);
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + ((cmd.size() < 4) ? " :Not enough parameters" : " :Too much parameters"), *this);
         return false;
     }
 }
