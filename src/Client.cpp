@@ -141,7 +141,7 @@ void    Client::setCmd(string line) {
             tmp = line.substr(i+1);
             i = line.size() - 1;
         }
-        if (line.at(i) != ' ')
+        else if (line.at(i) != ' ')
             tmp += line.at(i);
         if (line.at(i) == ' ' || i == line.size() - 1) {
             for (; i+1 < line.size() && line.at(i+1) == ' '; i++);

@@ -66,7 +66,7 @@ static void    initiateChannel(map<string, Channel*> &Channels, queue<string>& c
         Channels[channels.front()] = chnl;
         cout << "channel created" << Channels[channels.front()]->getName() << " : " << channels.front() << endl;
         SendMsg(*client, *client, join[0], "", channels.front());
-        ErrorMsgGenrator(":IRCserv.1337.ma ", " = " + channels.front() + " :@"+client->getNckName(), *client);
+        ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :@"+client->getNckName(), *client);
         ErrorMsgGenrator(":IRCserv.1337.ma 366 ", " " + channels.front() + " :End of /NAMES list.", *client);
     }
 }
