@@ -1,12 +1,12 @@
-#include "BtcPrice.hpp"
+#include "Informer.hpp"
 #include "PrvMsg.hpp"
 #include <sstream>
 
 typedef Bot* (*botCreator[])(std::string host, std::string port, std::string pass,BotType type);
 
-Bot *createBtcBot(std::string host, std::string port, std::string pass, BotType type)
+Bot *createInfBot(std::string host, std::string port, std::string pass, BotType type)
 {
-	return new BtcPrice(host, port, pass, type);
+	return new Informer(host, port, pass, type);
 }
 
 Bot *createPrvMsgBot(std::string host, std::string port, std::string pass, BotType type)
@@ -22,7 +22,7 @@ Bot *skip(std::string host, std::string port, BotType type)
 }
 Bot* createBot(std::string host, std::string port, std::string pass, BotType type)
 {
-	botCreator creators = {&createBtcBot, &createPrvMsgBot};
+	botCreator creators = {&createInfBot, &createPrvMsgBot};
 	int8_t funcPosition = (type == GETPRICE) * 1 + (type == ANNOMSG) * 2;
 	return creators[funcPosition - 1](host, port, pass, type);
 }

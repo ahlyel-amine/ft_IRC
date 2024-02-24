@@ -1,8 +1,6 @@
 #pragma once
 #ifndef BOT_HPP
 # define BOT_HPP
-#define  Sncro(x)\
-	usleep(x)
 #include <algorithm>
 #include <string>
 #include <iostream>
@@ -57,7 +55,6 @@ class Bot
 		// virtual Bot*		createBot(std::string host, std::string port, BotType type) = 0;
 		virtual ~Bot();
 };
-
 
 int16_t		connectToServer(Bot& bot);
 #endif

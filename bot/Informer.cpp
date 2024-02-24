@@ -1,11 +1,11 @@
-#include "BtcPrice.hpp"
+#include "Informer.hpp"
 
 
 
-BtcPrice::BtcPrice(std::string host, std::string port, std::string pass, BotType type)
- : Bot("btcPrice", host, port, pass, type) {}
+Informer::Informer(std::string host, std::string port, std::string pass, BotType type)
+ : Bot("Informer", host, port, pass, type) {}
 
-BtcPrice& BtcPrice::operator=( const BtcPrice& ) { return *this; }
+Informer& Informer::operator=( const Informer& ) { return *this; }
 
 std::string	localTime(time_t now)
 {
@@ -62,7 +62,7 @@ std::string getBtcPrice()
 	return response_data;
 }
 
-void			BtcPrice::botReply(std::string msg)
+void			Informer::botReply(std::string msg)
 {
 	std::string	cmd, nick, Msg, botName;
 	std::stringstream	ss(msg);
@@ -87,4 +87,4 @@ void			BtcPrice::botReply(std::string msg)
 }
 
 
-BtcPrice::~BtcPrice() {}
+Informer::~Informer() {}
