@@ -113,7 +113,7 @@ Server *Server::InstanceServer(string &port, string &psw) {
         }
         for (size_t i = 0; i < psw.size(); i++) {
             if (!isalnum(psw[i])) {
-                cerr << "Error : Invalide PassWord polecy" << endl;
+                cerr << "Error : Invalide PassWord policy" << endl;
                 exit(1);
             }
         }
