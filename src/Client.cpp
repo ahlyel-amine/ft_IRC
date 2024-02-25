@@ -87,61 +87,6 @@ bool Client::infoChannel(vector<string> cmd)
     return true;
 }
 
-bool	Client::getDate(vector<string> cmd) {
-	
-	if (cmd.size() == 1 && cmd[0] == "DATE")
-	{
-		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
-		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
-		for (; it != ite; it++)
-			if (it->second.getNckName() == "btcPrice")
-				break;
-		if (it != ite)
-			SendMsg(*this, it->second, cmd[0], "DATE ", ":Current time");
-		else
-			cerr << "BTCPRICE BOT is currently out of service" << endl;
-		return true;
-	}
-	cerr << "BTCPRICE: Invalid command forma" << endl;
-	return false;
-}
-
-bool	Client::anonyMsg(vector<string> cmd)
-{
-	if (cmd.size() == 3)
-	{
-		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
-		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
-		for (; it != ite; it++)
-			if (it->second.getNckName() == "AnonyMsg")
-				break;
-		if (it != ite)
-			SendMsg(*this, it->second, cmd[0], cmd[2], cmd[1]);
-		else
-			cerr << "ANONYMSG: Invalid Nickname" << endl;
-	}
-	return true;
-}
-
-bool	Client::btcPrice(vector<string> cmd) {
-	
-	if (cmd.size() == 1 && cmd[0] == "BTCPRICE")
-	{
-		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
-		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
-		for (; it != ite; it++)
-			if (it->second.getNckName() == "btcPrice")
-				break;
-		if (it != ite)
-			SendMsg(*this, it->second, cmd[0], "BTC Price: ", ":BTCPRICE:");
-		else
-			cerr << "BTCPRICE BOT is currently out of service" << endl;
-		return true;
-	}
-	cerr << "BTCPRICE: Invalid command forma" << endl;
-	return false;
-}
-
 /**
  * @brief Sets the command for the client.
  * 

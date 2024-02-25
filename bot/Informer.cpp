@@ -3,7 +3,7 @@
 
 
 Informer::Informer(std::string host, std::string port, std::string pass, BotType type)
- : Bot("Informer", host, port, pass, type) {}
+ : Bot("Emet", host, port, pass, type) {}
 
 Informer& Informer::operator=( const Informer& ) { return *this; }
 

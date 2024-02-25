@@ -67,7 +67,6 @@ int main(int ac, char **av)
 {
 	char buf[4096];
 	int nbytes;
-	int16_t sockFd;
 	bool reg = false;
 	if (ac != 5)
 	{

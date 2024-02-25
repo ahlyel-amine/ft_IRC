@@ -33,7 +33,7 @@ bool	Client::getDate(vector<string> cmd) {
 		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
 		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
 		for (; it != ite; it++)
-			if (it->second.getNckName() == "btcPrice")
+			if (it->second.getNckName() == "Emet")
 				break;
 		if (it != ite)
 			SendMsg(*this, it->second, cmd[0], "DATE ", ":Current time");
@@ -52,7 +52,7 @@ bool	Client::btcPrice(vector<string> cmd) {
 		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
 		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
 		for (; it != ite; it++)
-			if (it->second.getNckName() == "btcPrice")
+			if (it->second.getNckName() == "Emet")
 				break;
 		if (it != ite)
 			SendMsg(*this, it->second, cmd[0], "BTC Price: ", "get Price");
