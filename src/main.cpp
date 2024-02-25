@@ -18,9 +18,10 @@ int main(int ac, char **av) {
         }
 
 		cout << '\n' << srv->Welcome() << endl;
-        cout << WHT <<"\t\t\t[Server Started]" << '\n' << C_CLS << endl;
-		cout << BLU << "[ INFO ]\t" << WHT << hstname 
-		<< YLW << ":" << prt << C_CLS << " " << WHT << srv->getLocalTime() << endl; 
+        cout << BLU <<"\t\t\t[Server Started]" << '\n' << C_CLS << endl;
+		cout << BLU << "\t\t[Server Started]\n" << endl
+            << "\tPort[" << C_CLS << prt << BLU << "]\t|\tHOST["
+            << C_CLS << hstname << BLU << "]" << C_CLS << endl;
         while (!interpted)
         {
 			try {

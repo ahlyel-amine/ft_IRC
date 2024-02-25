@@ -135,9 +135,11 @@ string Server::Welcome() {
     Wlcm += "\t██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝  \n";
     Wlcm += "\t╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n";
     Wlcm += "\t ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n";
-    Wlcm += "\t\tKamikazesābā IRC\n";
-    Wlcm += "\t\tMade By : 0xJ4GU4R | 0xSABA | 0xM0RPH5\n";
-    Wlcm += C_CLS;
+    Wlcm += "\t\t[Kamikazesābā IRC]\n\n";
+    Wlcm += "\tMade By :" + static_cast<string>(C_CLS) + " 0xJ4GU4R "
+        + static_cast<string>(GRN) + "|" + static_cast<string>(C_CLS)
+        + " 0xSABA " + static_cast<string>(GRN) + "|" + static_cast<string>(C_CLS)
+        + " 0xM0RPH5\n";
     return Wlcm;
 }
 
