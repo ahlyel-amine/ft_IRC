@@ -92,6 +92,7 @@ class Client {
         /*        [Client Action Utils]       */
 		void	sendClientMsg(string&, vector<string>&);
 		void	sendChannelMsg(string&, vector<string>&);
+		void	sendBotMsg(Client* Sender,string& target, vector<string>& cmd);
 		bool	setNewTopic(vector<string>& cmd);
 		bool	listChannelTopic(vector<string>& cmd);
 		bool	noEnParam(vector<string>& cmd);
