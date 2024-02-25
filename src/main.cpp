@@ -24,6 +24,7 @@ int main(int ac, char **av) {
 			}catch(std::exception& e)
 			{
 				cerr << e.what() << endl;
+				break;
 			}
 		}
         delete srv;
