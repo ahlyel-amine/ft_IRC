@@ -210,7 +210,7 @@ bool    Client::QuitServer(vector<string> cmd) {
         SendMsg(*this, *chnl, cmd[0], cmd[cmd.size()-1], "Quit");
         if (chnl->getOperators().size() == 1 && chnl->isOperator(this) && chnl->getMembers().size() > 1) {
             chnl->addOperator(chnl->getMembers()[chnl->getMembers()[0] != this]);
-            SendMsg(*this, *chnl, "MODE", "", this->Chnls[i] + " +o " + chnl->getMembers()[chnl->getMembers()[0] != this]->NckName);
+            SendMsg(*this, *chnl, "MODE", "", this->Chnls[i] + " +o " + chnl->getMembers()[chnl->getMembers()[0] == this]->NckName);
         }
     }
     return true;
