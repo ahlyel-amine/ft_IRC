@@ -20,7 +20,7 @@ DEPS = $(patsubst %.cpp, $(OBJ_DIR)/%.d,  $(SRC))
 
 INCLUDES = -Iinc
 
-FLGS = -Wall -Wextra -Werror -std=c++98 #-fsanitize=address -g
+FLGS = -Wall -Wextra -Werror -std=c++98
 DEPSFLAGS = -MMD -MP
 NAME = ircserv
 #================================#
