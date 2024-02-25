@@ -111,6 +111,12 @@ Server *Server::InstanceServer(string &port, string &psw) {
             cerr << "Invalid Argument: " << (!psw.empty() ? "The port must contain only numbers." : "Empty Password.") << endl;
             exit(1);
         }
+        for (size_t i = 0; i < psw.size(); i++) {
+            if (!isalnum(psw[i])) {
+                cerr << "Error : Invalide PassWord polecy" << endl;
+                exit(1);
+            }
+        }
         Instance->Lport = port;
 		Instance->Pswd = psw;
 		Instance->isConnected = false;
@@ -129,7 +135,7 @@ string Server::Welcome() {
     Wlcm += "\t██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝  \n";
     Wlcm += "\t╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n";
     Wlcm += "\t ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n";
-    Wlcm += "\t\t\t Kamikaze sābā IRC\n";
+    Wlcm += "\t\tKamikazesābā IRC\n";
     Wlcm += "\t\tMade By : 0xJ4GU4R | 0xSABA | 0xM0RPH5\n";
     Wlcm += C_CLS;
     return Wlcm;
