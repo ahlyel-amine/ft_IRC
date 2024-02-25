@@ -21,65 +21,15 @@ Client::Client(int ClntFd, in_addr *ClntAddr) : ClntFd(ClntFd), Regestred(false)
 	this->DoCmd["TOPIC"] = static_cast<bool (Client::*)(vector<string>)>(&Client::Topic);
 	this->DoCmd["MODE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::modeCommand);
 	this->DoCmd["INVITE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::inviteCommand);
-	this->DoCmd["INFOC"] = static_cast<bool (Client::*)(vector<string>)>(&Client::infoChannel);
 	this->DoCmd["PONG"] = static_cast<bool (Client::*)(vector<string>)>(&Client::Pong);
     this->DoCmd["DATE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::getDate);
     this->DoCmd["PART"] = static_cast<bool (Client::*)(vector<string>)>(&Client::partCommand);
 	this->HstName = inet_ntoa(*ClntAddr);
 }
 
-bool Client::pong(vector<string> cmd)
+bool Client::Pong(vector<string> cmd)
 {
     (void)cmd;
-    return true;
-}
-
-void listClient(vector<Client *> vc, string& msg, string const &grade) {
-    msg +=  grade;
-    for (size_t i = 0; i < vc.size(); i++)
-    {
-        msg +=  vc[i]->getNckName() + " | ";
-    }
-    msg +=  "\n";
-}
-
-bool Client::infoChannel(vector<string> cmd)
-{
-    try
-    {    
-        if (cmd.size() != 2 || cmd[1].empty() || !Server::getInstance()->isChannel(cmd[1]))
-            return false;
-        Channel *chnl = Server::getInstance()->getChannel(cmd[1]);
-        if (!chnl)
-            return false;
-        string msg;
-        msg +=  "Channel: " + cmd[1] + "\n";
-        listClient(chnl->getMembers(), msg, "Members: ");
-        listClient(chnl->getOperators(), msg, "Operators: ");
-        listClient(chnl->getInvited(), msg, "Invited: ");
-        msg += "Topic: ";
-        if (chnl->isTopic()) msg += "✓ : ";
-        else msg += "✕ ";
-        msg += chnl->getTopic() + "\n";
-        msg += "Invite Only: ";
-        if (chnl->isInviteOnly()) msg += "✓ : ";
-        else msg += "✕ ";
-        msg +=  "\nPassword: ";
-        if (chnl->isLocked()) msg += "✓ : ";
-        else msg += "✕ ";
-        if (chnl->isLocked()) msg += chnl->getPassword();
-        msg +=  "\nLimit: ";
-        if (chnl->isLimited()) msg += "✓ : ";
-        else msg += "✕ ";
-        if (chnl->isLimited()) msg += to_string(chnl->getLimit());
-        msg +=  "\n";
-        send(this->ClntFd, msg.c_str(), msg.size(), 0);
-        return true;
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
     return true;
 }
 

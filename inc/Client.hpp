@@ -82,11 +82,7 @@ class Client {
 		bool		   Topic(vector<string>);
 		bool 		   partCommand(vector<string>);
 		bool		   getDate(vector<string>);
-		bool		   Pong(vector<string> vc) {
-			(void)vc;
-			// cout << vc[0] << endl;
-			return true;
-		}
+		bool		   Pong(vector<string>);
 		void		   Welcome();
 		/****************************/
         /*        [Client Action Utils]       */
@@ -97,8 +93,6 @@ class Client {
 		bool	listChannelTopic(vector<string>& cmd);
 		bool	noEnParam(vector<string>& cmd);
 		/****************************/
-		/*      [DebugActions]     */
-		bool		   infoChannel(vector<string>);
 };
 
 void    ErrorMsgGenrator(string const &Prefix, string const &Sufix, Client &Sender);

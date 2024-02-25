@@ -35,7 +35,7 @@ static void getOperations(vector<string> arg, queue<pair <bool, char> > &modesQu
 {
     if (arg[0].empty())
     {
-        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", "ERR_NEEDMOREPARAMS :Not enough parameters", client);
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " ERR_NEEDMOREPARAMS :Not enough parameters", client);
         return ;
     }
     for (size_t i = 0; i < arg[0].size(); i++)
@@ -137,7 +137,7 @@ static void keyController(Channel* const channel, Client* const client, bool set
             }
             else
             {
-                ErrorMsgGenrator(":IRCserv.1337.ma 475 ", "ERR_BADCHANNELKEY :Wrong channel key", *client);
+                ErrorMsgGenrator(":IRCserv.1337.ma 475 ", " ERR_BADCHANNELKEY :Wrong channel key", *client);
             }
         }
     }
@@ -148,7 +148,7 @@ static void    operatorController(Channel* const channel, Client* const client, 
     Server *server = Server::getInstance();
 
     if (!server->isClient(arg[index]))
-        ErrorMsgGenrator(":IRCserv.1337.ma 401 ", "ERR_NOSUCHNICK :No such nick", *client);
+        ErrorMsgGenrator(":IRCserv.1337.ma 401 ", " ERR_NOSUCHNICK :No such nick", *client);
 
     Client &target = server->getClient(arg[index]);
 
@@ -156,7 +156,7 @@ static void    operatorController(Channel* const channel, Client* const client, 
     {
         if (!channel->isMember(&target))
         {
-            ErrorMsgGenrator(":IRCserv.1337.ma 442 ", "ERR_NOTONCHANNEL :You're not on that channel", *client);
+            ErrorMsgGenrator(":IRCserv.1337.ma 442 ", " ERR_NOTONCHANNEL :You're not on that channel", *client);
         }
         else
         {
@@ -227,19 +227,19 @@ static void    modeSelector(queue<pair <bool, char> > &modesQueue, Channel* cons
             break ;
         case 'k':
             if (++index >= arg.size())
-                ErrorMsgGenrator(":IRCserv.1337.ma 461 ", "ERR_NEEDMOREPARAMS :Not enough parameters", *client);
+                ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " ERR_NEEDMOREPARAMS :Not enough parameters", *client);
             else
                 keyController(channel, client, set, index, arg);
             break ;
         case 'o':
             if (++index >= arg.size())
-                ErrorMsgGenrator(":IRCserv.1337.ma 461 ", "ERR_NEEDMOREPARAMS :Not enough parameters", *client);
+                ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " ERR_NEEDMOREPARAMS :Not enough parameters", *client);
             else
                 operatorController(channel, client, set, index, arg);
             break ;
         case 'l':
             if (set && ++index >= arg.size())
-                ErrorMsgGenrator(":IRCserv.1337.ma 461 ", "ERR_NEEDMOREPARAMS :Not enough parameters", *client);
+                ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " ERR_NEEDMOREPARAMS :Not enough parameters", *client);
             else
                 limitController(channel, client, set, index, arg);
             break ;
@@ -275,7 +275,7 @@ void   Channel::modeCommand(vector<string> arg, Client* const client)
         return (printModes(privelege, this->name, *client));
 
     if (!this->isOperator(client))
-        return (ErrorMsgGenrator(":IRCserv.1337.ma 482 ", this->getName() + " :You're not channel operator", *client));
+        return (ErrorMsgGenrator(":IRCserv.1337.ma 482 ", " " + this->getName() + " :You're not channel operator", *client));
 
     getOperations(arg, modesQueue, *client);
 
