@@ -122,13 +122,16 @@ Server *Server::InstanceServer(string &port, string &psw) {
 // Welcoming Function
 string Server::Welcome() {
     string Wlcm;
+    Wlcm += GRN;
     Wlcm += "\t██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗\n";
     Wlcm += "\t██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝\n";
     Wlcm += "\t██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗  \n";
     Wlcm += "\t██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝  \n";
     Wlcm += "\t╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n";
     Wlcm += "\t ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n";
-    Wlcm += "\t\tMade By : 0xJ4GU4R | 0x54B4 | 0xM0RPH5\n";
+    Wlcm += "\t\t\t Kamikaze sābā IRC\n";
+    Wlcm += "\t\tMade By : 0xJ4GU4R | 0xSABA | 0xM0RPH5\n";
+    Wlcm += C_CLS;
     return Wlcm;
 }
 

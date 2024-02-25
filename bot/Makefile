@@ -6,7 +6,7 @@
 #    By: aahlyel <aahlyel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/03 15:57:19 by aelbrahm          #+#    #+#              #
-#    Updated: 2024/02/25 08:40:21 by aahlyel          ###   ########.fr        #
+#    Updated: 2024/02/25 08:55:34 by aahlyel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -51,8 +51,9 @@ clean :
 		$(RM) obj
 		printf "[ $(RED)%-30s$(C_CLS) ]\n" "Objects file got cleaned successfuly ❌"
 		sleep 1
+
 fclean : clean
-		$(RM) $(DIR)
+		$(RM) bin obj
 		printf "[ $(RED)%-30s$(C_CLS) ]\n" "Executable & Archives got removed successfuly ❌"
 
 re : fclean all
