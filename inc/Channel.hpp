@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client.hpp"
+#include <queue>
 
 class Client;
 
@@ -73,5 +74,7 @@ class Channel
         ~Channel();
         void   modeCommand(vector<string> arg, Client* const client);
         void   inviteCommand(vector<string> arg, Client* const client);
+        void   partCommand(Client* const client, queue<string>& messages);
+
         const string   &getName() const;        
 };

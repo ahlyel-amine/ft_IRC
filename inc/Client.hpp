@@ -59,6 +59,7 @@ class Client {
 		void		   setCmd(string);
 		void		   setMsgDzeb(string rep) {this->Msg = rep;}
 		void		   setChannel(string ch) {this->Chnls.push_back(ch);}
+
         /****************************/
         /*        [OPERATORS]       */
         bool operator==(const Client &obj) const {return this->ClntFd == obj.ClntFd;}
@@ -79,6 +80,7 @@ class Client {
 		bool		   Kick(vector<string>);
 		bool		   pong(vector<string>);
 		bool		   Topic(vector<string>);
+		bool 		   partCommand(vector<string>);
 		bool		   getDate(vector<string>);
 		bool		   Pong(vector<string> vc) {
 			(void)vc;

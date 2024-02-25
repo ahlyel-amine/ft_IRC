@@ -65,6 +65,7 @@ static void    initiateChannel(map<string, Channel*> &Channels, queue<string>& c
 
         Channels[channels.front()] = chnl;
         cout << "channel created" << Channels[channels.front()]->getName() << " : " << channels.front() << endl;
+        client->setChannel(channels.front());
         SendMsg(*client, *client, join[0], "", channels.front());
         ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :@"+client->getNckName(), *client);
         ErrorMsgGenrator(":IRCserv.1337.ma 366 ", " " + channels.front() + " :End of /NAMES list.", *client);
@@ -146,14 +147,18 @@ bool    Client::joinCommand(vector<string> join)
     queue<string>   channels;
     queue<string>   passwords;
 
+    if (join.size() < 2)
+    {
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " :Not enough parameters", *this);
+        return (false);
+    }
     joinParser(join, channels, passwords, *this);
-
     while (!channels.empty())
     {
         map<string, Channel*>                &Channels =  Server::getInstance()->getChannels();
         map<string, Channel*>::iterator      search   =  Channels.find(channels.front());
 
-        if (!Channels.count(channels.front()))
+        if (search == Channels.end())
         {
             initiateChannel(Channels, channels, join, channels.front(), this);
         }

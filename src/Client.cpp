@@ -24,6 +24,7 @@ Client::Client(int ClntFd, in_addr *ClntAddr) : ClntFd(ClntFd), Regestred(false)
 	this->DoCmd["INFOC"] = static_cast<bool (Client::*)(vector<string>)>(&Client::infoChannel);
 	this->DoCmd["PONG"] = static_cast<bool (Client::*)(vector<string>)>(&Client::Pong);
     this->DoCmd["DATE"] = static_cast<bool (Client::*)(vector<string>)>(&Client::getDate);
+    this->DoCmd["PART"] = static_cast<bool (Client::*)(vector<string>)>(&Client::partCommand);
 	this->HstName = inet_ntoa(*ClntAddr);
 }
 
@@ -32,35 +33,34 @@ bool Client::pong(vector<string> cmd)
     (void)cmd;
     return true;
 }
+
+void listClient(vector<Client *> vc, string& msg, string const &grade) {
+    msg +=  grade;
+    for (size_t i = 0; i < vc.size(); i++)
+    {
+        msg +=  vc[i]->getNckName() + " | ";
+    }
+    msg +=  "\n";
+}
+
 bool Client::infoChannel(vector<string> cmd)
 {
     try
-    {
-        
-    
-    for (size_t i = 0; i < cmd.size(); i++)
-    {
-        cout << cmd[i] << endl;
-    }
-    if (cmd.size() != 2)
-        return false;
-    Channel *chnl = Server::getInstance()->getChannels()[cmd[1]];
-    if (!chnl)
-        return false;
-    string msg;
+    {    
+        for (size_t i = 0; i < cmd.size(); i++)
+        {
+            cout << cmd[i] << endl;
+        }
+        if (cmd.size() != 2)
+            return false;
+        Channel *chnl = Server::getInstance()->getChannels()[cmd[1]];
+        if (!chnl)
+            return false;
+        string msg;
         msg +=  "Channel: " + cmd[1] + "\n";
-        msg +=  "Members: ";
-        for (size_t i = 0; i < chnl->getMembers().size(); i++)
-            msg +=  chnl->getMembers()[i]->getNckName() + " | ";
-        msg +=  "\n";
-        msg +=  "Operators: ";
-        for (size_t i = 0; i < chnl->getOperators().size(); i++)
-            msg +=  chnl->getOperators()[i]->getNckName() + " | ";
-        msg +=  "\n";
-        msg +=  "Invited: ";
-        for (size_t i = 0; i < chnl->getInvited().size(); i++)
-            msg +=  chnl->getInvited()[i]->getNckName() + " | ";
-        msg +=  "\n";
+        listClient(chnl->getMembers(), msg, "Members: ");
+        listClient(chnl->getOperators(), msg, "Operators: ");
+        listClient(chnl->getInvited(), msg, "Invited: ");
         msg += "Topic: ";
         if (chnl->isTopic()) msg += "✓ : ";
         else msg += "✕ ";
@@ -68,7 +68,6 @@ bool Client::infoChannel(vector<string> cmd)
         msg += "Invite Only: ";
         if (chnl->isInviteOnly()) msg += "✓ : ";
         else msg += "✕ ";
-        if (chnl->isInviteOnly()) msg +=  chnl->getTopic();
         msg +=  "\nPassword: ";
         if (chnl->isLocked()) msg += "✓ : ";
         else msg += "✕ ";
@@ -78,8 +77,8 @@ bool Client::infoChannel(vector<string> cmd)
         else msg += "✕ ";
         if (chnl->isLimited()) msg += to_string(chnl->getLimit());
         msg +=  "\n";
-    send(this->ClntFd, msg.c_str(), msg.size(), 0);
-    return true;
+        send(this->ClntFd, msg.c_str(), msg.size(), 0);
+        return true;
     }
     catch(const std::exception& e)
     {
