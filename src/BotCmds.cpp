@@ -1,13 +1,37 @@
 #include "Client.hpp"
 #include "Server.hpp"
 
+void	Client::sendBotMsg(Client* Sender,string& target, vector<string>& cmd)
+{
+	map<int, Client>::iterator	startIt = Server::getInstance()->getClients().begin();
+	map<int, Client>::iterator	endIt = Server::getInstance()->getClients().end();
+	for (; startIt != endIt; startIt++)
+		if (startIt->second.NckName == target)
+			break;
+	if (startIt != endIt)
+		SendMsg(*Sender, startIt->second, "PRIVMSG", cmd[2], target);
+	else
+		ErrorMsgGenrator(":IRCserv.1337.ma 401 ", " " + target + " :No such nick", *this);
+}
+
 bool	Client::anonyMsg(vector<string> cmd)
 {
 	if (cmd.size() == 3)
 	{
-		vector<string> recievers = getTargets(cmd[1], ',');
-		for (uint16_t iter = 0; iter < recievers.size(); iter++)
-			sendClientMsg(recievers[iter], cmd);
+		map<int, Client>::iterator it = Server::getInstance()->getClients().begin();
+		map<int, Client>::iterator ite = Server::getInstance()->getClients().end();
+		for (; it != ite; it++)
+			if (it->second.getNckName() == "AnonyMsg")
+				break;
+		if (it != ite)
+		{
+			vector<string> recievers = getTargets(cmd[1], ',');
+			for (uint16_t iter = 0; iter < recievers.size(); iter++)
+				sendBotMsg(&(it->second), recievers[iter], cmd);
+		}
+		else
+			ErrorMsgGenrator((SERVER_NAME + string(" 401 ")), " :Currently out of Service", *this);
+		
 		return true;
 	}
 	else if (cmd.size() <= 2)
