@@ -76,6 +76,9 @@ class Server {
         bool                    isChannel(string &chnl);
 
         /*       [GETTERS]       */
+        string                  getLocalTime(){
+            return (this->LocalTime);
+        }
         static Server           *InstanceServer(string &port, string &Pswd);
         int                     getSockFd() const {return this->SockFd;}
         string                  getPswd() const {return this->Pswd;}

@@ -6,6 +6,14 @@ void   Channel::partCommand(Client* const client, queue<string>& messages)
     SendMsg(*client, *this, "PART" , "", this->getName() + ((messages.empty()) ? "" : " " + messages.front()));
     this->removeOperator(client);
     this->removeMember(client);
+    if (this->getOperators().empty())
+    {
+        if (!this->getMembers().empty())
+        {
+            this->addOperator(this->getMembers().front());
+            SendMsg(*this->getMembers().front(), *this, "MODE", "", this->getName()+" +o "+this->getMembers().front()->getNckName());
+        }
+    }
     for (vector<string>::iterator it = client->getChnls().begin(); it != client->getChnls().end(); it++)
     {
         if (*it == this->getName())
