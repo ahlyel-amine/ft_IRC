@@ -1,4 +1,4 @@
-SRC = src/Authentication.cpp src/Channel.cpp src/Client.cpp src/join.cpp src/main.cpp src/PrivMsg.cpp src/Server.cpp src/Kick.cpp src/topic.cpp src/invite.cpp src/mode.cpp
+SRC = src/Authentication.cpp src/Channel.cpp src/Client.cpp src/join.cpp src/main.cpp src/PrivMsg.cpp src/Server.cpp src/Kick.cpp src/topic.cpp src/invite.cpp src/mode.cpp src/part.cpp
 
 OBJ_DIR = obj
 
