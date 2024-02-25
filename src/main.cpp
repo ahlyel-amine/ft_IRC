@@ -10,16 +10,19 @@ int main(int ac, char **av) {
         signal(SIGPIPE, SIG_IGN);
         string pwd(av[2]);
         string prt(av[1]);
-		
+		if (pwd.empty()) {
+            cerr << "Error : No password was given" << endl;
+            exit(1);
+        }
         Server *srv = Server::InstanceServer(prt, pwd);
 		cout << '\n' << srv->Welcome() << endl;
         cout << "\t\t[Server Started]" << endl << "Port: " << prt << endl;
         while (!interpted)
         {
-			try{
+			try {
 				srv->launchServer();
-			}catch(std::exception& e)
-			{
+			}
+            catch(std::exception& e) {
 				cerr << e.what() << endl;
 				break;
 			}

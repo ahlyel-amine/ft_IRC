@@ -205,8 +205,14 @@ bool    Client::QuitServer(vector<string> cmd) {
 
     if (cmd.size() == 1)
         cmd.push_back("");
-    for (size_t i = 0; i < this->Chnls.size(); i++)
-        SendMsg(*this, *Server::getInstance()->getChannels()[this->Chnls[i]], cmd[0], cmd[cmd.size()-1], "Quit");
+    for (size_t i = 0; i < this->Chnls.size(); i++) {
+        Channel *chnl = Server::getInstance()->getChannels()[this->Chnls[i]];
+        SendMsg(*this, *chnl, cmd[0], cmd[cmd.size()-1], "Quit");
+        if (chnl->getOperators().size() == 1 && chnl->isOperator(this) && chnl->getMembers().size() > 1) {
+            chnl->addOperator(chnl->getMembers()[chnl->getMembers()[0] != this]);
+            SendMsg(*this, *chnl, "MODE", "", this->Chnls[i] + " +o " + chnl->getMembers()[chnl->getMembers()[0] != this]->NckName);
+        }
+    }
     return true;
 }
 
