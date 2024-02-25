@@ -3,6 +3,7 @@
 
 void   Channel::partCommand(Client* const client, queue<string>& messages)
 {
+    SendMsg(*client, *this, "PART" , "", this->getName() + ((messages.empty()) ? "" : " " + messages.front()));
     this->removeOperator(client);
     this->removeMember(client);
     for (vector<string>::iterator it = client->getChnls().begin(); it != client->getChnls().end(); it++)
@@ -13,7 +14,6 @@ void   Channel::partCommand(Client* const client, queue<string>& messages)
             break;
         }
     }
-    SendMsg(*client, *this, "PART" , "", this->getName() + ((messages.empty()) ? "" : " " + messages.front()));
     if (!messages.empty())
         messages.pop();
 }
