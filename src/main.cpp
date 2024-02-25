@@ -4,22 +4,25 @@ bool interpted = false;
 
 void hundl(int) {interpted = true;}
 
-void f(void){system("lsof -c ircserv");}
+// void f(void){system("lsof -c ircserv");}
 
 int main(int ac, char **av) {
-    atexit(f);
+    // atexit(f);
     if(ac == 3) {
         signal(SIGINT, hundl);
         signal(SIGPIPE, SIG_IGN);
         string pwd(av[2]);
         string prt(av[1]);
-		if (pwd.empty()) {
-            cerr << "Error : No password was given" << endl;
+        char hstname[256];
+		Server *srv = Server::InstanceServer(prt, pwd);
+		if (gethostname(hstname, sizeof(hstname)) == -1) {
+            cerr << "Error :" << strerror(errno) << endl;
             exit(1);
         }
-        Server *srv = Server::InstanceServer(prt, pwd);
-		cout << '\n' << srv->Welcome() << endl;
-        cout << "\t\t[Server Started]" << endl << "Port: " << prt << endl;
+        cout << srv->Welcome() << endl;
+        cout << BLU << "\t\t[Server Started]\n" << endl
+            << "\tPort[" << C_CLS << prt << BLU << "]\t|\tIP["
+            << C_CLS << hstname << BLU << "]" << C_CLS << endl;
         while (!interpted)
         {
 			try {
@@ -31,7 +34,7 @@ int main(int ac, char **av) {
 			}
 		}
         delete srv;
-        system("leaks ircserv");
+        // system("leaks ircserv");
     }
     else {
         cerr << "Invalide Arguments : Usage : ./ircserv <port> <password>" << endl;

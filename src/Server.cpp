@@ -65,7 +65,7 @@ void Server::SetSockFd(string &port) {
 			close(this->SockFd);
 			throw std::runtime_error(strerror(errno));
 		}
-        if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen))
+        if (bind(this->SockFd, tmp->ai_addr, tmp->ai_addrlen) == -1)
         {
             close(this->SockFd);
             continue;
@@ -92,8 +92,7 @@ void	Server::SocketListen( void )
 {
 	if (!this->isConnected){
 		Instance->SetSockFd(this->Lport);
-		fcntl(Instance->SockFd, F_SETFD, O_NONBLOCK);
-			
+		fcntl(Instance->SockFd, F_SETFD, O_NONBLOCK);			
 		if (listen(Instance->SockFd, max_connection)) {
 			close(Instance->SockFd);
 			throw std::runtime_error(strerror(errno));
@@ -107,7 +106,7 @@ void	Server::SocketListen( void )
 Server *Server::InstanceServer(string &port, string &psw) {
     if (!Instance) {
         Instance = new Server();
-        if (port.find_first_not_of("0123456789") != string::npos || atoi(port.c_str()) < 1024){
+        if (port.find_first_not_of("0123456789") != string::npos || atoi(port.c_str()) < 1024 || psw.empty()){
             cerr << "Invalid Argument: " << (!psw.empty() ? "The port must contain only numbers." : "Empty Password.") << endl;
             exit(1);
         }
@@ -135,9 +134,11 @@ string Server::Welcome() {
     Wlcm += "\t██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝  \n";
     Wlcm += "\t╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗\n";
     Wlcm += "\t ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝\n";
-    Wlcm += "\t\tKamikazesābā IRC\n";
-    Wlcm += "\t\tMade By : 0xJ4GU4R | 0xSABA | 0xM0RPH5\n";
-    Wlcm += C_CLS;
+    Wlcm += "\t\t[Kamikazesābā IRC]\n\n";
+    Wlcm += "\tMade By :" + static_cast<string>(C_CLS) + " 0xJ4GU4R "
+        + static_cast<string>(GRN) + "|" + static_cast<string>(C_CLS)
+        + " 0xSABA " + static_cast<string>(GRN) + "|" + static_cast<string>(C_CLS)
+        + " 0xM0RPH5\n";
     return Wlcm;
 }
 
