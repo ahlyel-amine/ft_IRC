@@ -60,9 +60,9 @@ bool	Client::getDate(vector<string> cmd) {
 			if (it->second.getNckName() == "Emet")
 				break;
 		if (it != ite)
-			SendMsg(*this, it->second, cmd[0], "DATE ", ":Current time");
+			SendMsg(*this, it->second, cmd[0], "DATE ", " :Current time");
 		else
-			ErrorMsgGenrator((SERVER_NAME + string(" 401 ")), " :Currently out of Service", *this);
+			ErrorMsgGenrator((SERVER_NAME + string(" 401 ")), ":Currently out of Service", *this);
 		return true;
 	}
 	ErrorMsgGenrator((SERVER_NAME + string(" 400 ")), " :Invalid Command forma", *this);
@@ -81,7 +81,7 @@ bool	Client::btcPrice(vector<string> cmd) {
 		if (it != ite)
 			SendMsg(*this, it->second, cmd[0], "BTC Price: ", "get Price");
 		else
-			ErrorMsgGenrator((SERVER_NAME + string(" 401 ")), ":Currently out of Service", *this);
+			ErrorMsgGenrator((SERVER_NAME + string(" 401 ")), " :Currently out of Service", *this);
 		return true;
 	}
 	ErrorMsgGenrator((SERVER_NAME + string(" 400 ")), ":Invalid Command forma", *this);

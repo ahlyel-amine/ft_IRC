@@ -59,7 +59,7 @@ std::string getBtcPrice()
 			response_data.clear();
 		curl_easy_cleanup(curl);
 	}
-	return response_data;
+	return (response_data + "USD");
 }
 
 void			Informer::botReply(std::string msg)
