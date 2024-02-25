@@ -33,6 +33,11 @@ static void modeFlagsPicker(char flag, queue<pair <bool, char> > &modesQueue, Cl
 
 static void getOperations(vector<string> arg, queue<pair <bool, char> > &modesQueue, Client&  client)
 {
+    if (arg[0].empty())
+    {
+        ErrorMsgGenrator(":IRCserv.1337.ma 461 ", "ERR_NEEDMOREPARAMS :Not enough parameters", client);
+        return ;
+    }
     for (size_t i = 0; i < arg[0].size(); i++)
     {
         size_t j = i + 1;
@@ -244,7 +249,7 @@ static void    modeSelector(queue<pair <bool, char> > &modesQueue, Channel* cons
 bool Client::modeCommand(vector<string> arg)
 {
     arg.erase(arg.begin());
-    if (arg.size() < 1)
+    if (arg.size() < 1 || arg[0].empty())
     {
         ErrorMsgGenrator(":IRCserv.1337.ma 461 ", "MODE :Not enough parameters", *this);
         return (false);

@@ -47,9 +47,9 @@ bool Client::infoChannel(vector<string> cmd)
 {
     try
     {    
-        if (cmd.size() != 2)
+        if (cmd.size() != 2 || cmd[1].empty() || !Server::getInstance()->isChannel(cmd[1]))
             return false;
-        Channel *chnl = Server::getInstance()->getChannels()[cmd[1]];
+        Channel *chnl = Server::getInstance()->getChannel(cmd[1]);
         if (!chnl)
             return false;
         string msg;

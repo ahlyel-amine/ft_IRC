@@ -50,7 +50,7 @@ bool Client::partCommand(vector<string> cmd)
     queue<string>   channels;
     queue<string>   messages;
 
-    if (cmd.size() < 2)
+    if (cmd.size() < 2 || cmd[1].empty())
     {
         ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " :Not enough parameters", *this);
         return (false);

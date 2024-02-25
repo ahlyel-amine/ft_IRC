@@ -5,8 +5,6 @@
 
 static bool is_channel(string channel)
 {
-    if (channel.size() == 1 && channel[0] == '0')
-        return (true);
     if (channel.size() < 2 || channel.size() > 51 || channel[0] != '#')
         return (false);
     channel.erase(0, 1);
@@ -152,7 +150,7 @@ bool    Client::joinCommand(vector<string> join)
     queue<string>   channels;
     queue<string>   passwords;
 
-    if (join.size() < 2)
+    if (join.size() < 2 || join[1].empty())
     {
         ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " :Not enough parameters", *this);
         return (false);
