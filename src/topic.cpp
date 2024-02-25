@@ -36,7 +36,7 @@ bool	Client::setNewTopic(vector<string>& cmd)
 				else
 					it->second->setTopic(cmd[2]);
 				cout << BLU << "[ INFO ]\t" << YLW  << "New topic Have been Set for " 
-				<< it->second->getName() << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS;
+				<< it->second->getName() << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS << endl;
 				for (size_t i = 0; i < it->second->getMembers().size(); i++)
 				{
 					msg += cmd[2] + "\r\n";

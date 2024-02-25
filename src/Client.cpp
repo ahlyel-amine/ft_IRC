@@ -111,24 +111,18 @@ void    Client::setCmd(string line) {
 }
 
 void Client::Welcome() {
-	stringstream	wMsg;
 	const string&	nickName = this->getNckName();
-	wMsg << ":" << SERVER_NAME << " 001 " << nickName
-	<< " : Welcome to the Internet Relay Network" << "\r\n";
-	wMsg <<":" << SERVER_NAME << " 002 " << nickName
-	<< " : Your host is " << SERVER_NAME << ", running version " << VERSION << "\r\n";
-	wMsg << ":" << SERVER_NAME << " 003 " << nickName
-	<< " :This " << SERVER_NAME << " server was created " << Server::getInstance()->getLocalTime() << "\r\n";
-	wMsg << ":" << "server 004 " << nickName
-	<< " " << SERVER_NAME << " Version relaisse "<< VERSION << " <available umodes>"
-	<< " <available cmodes>" << "\r\n";
-	if (send(this->ClntFd, wMsg.str().c_str(), wMsg.str().size(), 0) <= 0)
+    string msg;
+    msg = ":" + static_cast<string>(SERVER_NAME) + " 001 " + nickName
+        + " :Welcome to Kamikazi network, " + nickName + "\r\n";
+    msg += ":" + static_cast<string>(SERVER_NAME) + " 002 " + nickName
+        + " :Your host is [" + static_cast<string>(SERVER_NAME) + "], running version "
+        + static_cast<string>(VERSION) + "\r\n";
+    msg += ":" + static_cast<string>(SERVER_NAME) + " 003 " + nickName
+        + " :This Server[" + static_cast<string>(SERVER_NAME) + "] was created on "
+        + Server::getInstance()->getLocalTime() + "\r\n";
+    if (send(this->ClntFd, msg.c_str(), msg.size(), 0) <= 0)
 		cerr << "Error: " << strerror(errno) << endl;
-	// send(this->ClntFd, wMsg.str().c_str(), wMsg.str().size(), 0);
-    // ErrorMsgGenrator(":IRCserv.1337.ma 001 ", " Welcome to the KAMIKAZI Network, " + this->NckName, *this);
-    // ErrorMsgGenrator(":IRCserv.1337.ma 002 ", " Your host is IRCserv.1337.ma, running version 0.1.0", *this);
-    // ErrorMsgGenrator(":IRCserv.1337.ma 003 ", " This server was created " + localTime(time(0)), *this);
-    // ErrorMsgGenrator(":IRCserv.1337.ma 004 ", " IRCserv.1337.ma 0.1.0", *this);
 }
 
 /**
@@ -162,9 +156,11 @@ bool    Client::ParsAndExec() {
     }
     if (!this->SrvPss.empty() && !this->NckName.empty() && !this->UsrName.empty()) {
         if (!this->Regestred)
-            this->Welcome();
-		cout << BLU << "[ INFO ]\t" << WHT << this->getHstName() << " Authenticat Successfuly to "
-		<< YLW << SERVER_NAME << C_CLS << " " << WHT << localTime(time(0)) << endl; 
+        {
+			this->Welcome();
+			cout << BLU << "[ INFO ]\t" << WHT << this->getHstName() << " Authenticat Successfuly to "
+			<< YLW << SERVER_NAME << C_CLS << " " << WHT << localTime(time(0)) << endl; 
+		}    
         this->Regestred = true;
     }
     this->Msg = "";

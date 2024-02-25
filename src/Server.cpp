@@ -1,5 +1,6 @@
 #include "Server.hpp"
 
+
 Server *Server::Instance = NULL;
 
 std::string	localTime(time_t now)
@@ -40,9 +41,8 @@ Server::~Server() {
 void Server::SetSockFd(string &port) {
     struct addrinfo *ptr, *tmp, hnt;
     char    str[256];
-    
     if (gethostname(str, sizeof(str)) < 0) {
-        cerr << "Getting Host Name : " << strerror(errno) << endl;
+		errorLog("Getting Host Name : " + string(strerror(errno)));
         exit(1);
     }
     memset(&hnt, 0, sizeof(hnt));
@@ -52,7 +52,7 @@ void Server::SetSockFd(string &port) {
     // int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), opt_val = 1;
     int status = getaddrinfo(str, port.c_str(), &hnt, &ptr), enable = 1;
     if (status) {
-        cerr << "Getting Address Info : " << gai_strerror(status) << endl;
+		errorLog("Getting Address Info : " + string(gai_strerror(status)));
         exit(1);
     }
     for (tmp = ptr; tmp; tmp = tmp->ai_next) {
@@ -108,12 +108,12 @@ Server *Server::InstanceServer(string &port, string &psw) {
     if (!Instance) {
         Instance = new Server();
         if (port.find_first_not_of("0123456789") != string::npos || atoi(port.c_str()) < 1024){
-            cerr << "Invalid Argument: " << (!psw.empty() ? "The port must contain only numbers." : "Empty Password.") << endl;
+			(port.empty() ? errorLog("Invalid Argument: Empty Port field.") : errorLog("Invalid Argument: The port must contain only numbers."));
             exit(1);
         }
         for (size_t i = 0; i < psw.size(); i++) {
             if (!isalnum(psw[i])) {
-                cerr << "Error : Invalide PassWord policy" << endl;
+				errorLog("Error : Invalide PassWord policy");
                 exit(1);
             }
         }
@@ -156,8 +156,15 @@ void Server::launchServer() {
         throw std::runtime_error(strerror(errno));
     }
     for (size_t i = 0; i < this->ClFds.size(); i++)
-        if (this->ClFds[i].revents & POLLIN)
-            (this->SockFd == this->ClFds[i].fd) ? this->JoinServer() : this->ReplyToClient(this->Clients[this->ClFds[i].fd]); //? this->JoinServer() : this->;  // ? new client : client request;
+    {
+		if (this->ClFds[i].revents & POLLIN)
+		{
+			if (this->SockFd == this->ClFds[i].fd)
+				this->JoinServer();
+			else
+				this->ReplyToClient(this->Clients[this->ClFds[i].fd]);
+		}
+	}   
 }
 
 /*
@@ -174,11 +181,14 @@ bool Server::JoinServer() {
     memset(&ClntAddr, 0, len);
     int ClntFd = accept(this->SockFd, (sockaddr *)&ClntAddr, &len);
     if (ClntFd < 0) {
-        cerr << "Establishing Connection : " << strerror(errno) << endl;
+		errorLog("Establishing Connection : " + string(strerror(errno)));
         return false;
     }
     fcntl(ClntFd, F_SETFD, O_NONBLOCK);
     this->Clients.insert(pair<int, Client>(ClntFd, Client(ClntFd, &ClntAddr.sin_addr)));
+	cout << BLU << "[ INFO ]\t" << WHT << this->Clients[ClntFd].getHstName() 
+				<< " Establishing Connection to " << YLW 
+				<< SERVER_NAME << ":" << this->Lport << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS << endl;
     this->ClFds.push_back(pollfd());
     this->ClFds.back().fd = ClntFd;
     this->ClFds.back().events = POLLIN;
@@ -202,13 +212,13 @@ bool	BufferFeed(Client &Clnt, string &buffer)
 		if (tmp.size() && tmp[tmp.size() - 1] == '\r')
 			tmp.erase(tmp.size() - 1);
 		Clnt.setMsgDzeb(tmp);
-        cout << tmp << endl;
 		if (!Clnt.getMsg().empty())
             parsed = Clnt.ParsAndExec();
         if (Clnt.getCmd() == "QUIT") {
             Server::getInstance()->RemoveClient(Clnt.getClntFd());
             return false;
         }
+		CmdLogs(Clnt.getCmd(), Clnt.getHstName());
 		tmp.clear();
 	}
     buffer = "";
@@ -221,6 +231,9 @@ bool	BufferFeed(Client &Clnt, string &buffer)
     to what does he sent otherwise an error
     discribing the problem is printed
 */
+
+
+
 bool Server::ReplyToClient(Client &Clnt) {
     char    Buff[3000];
     memset(Buff, 0, 3000);
@@ -233,7 +246,8 @@ bool Server::ReplyToClient(Client &Clnt) {
         Msg.erase(0, Msg.find_first_not_of(" \t\n\v\f\r"));
     	return BufferFeed(Clnt, Clnt.getBff());
 	}
-    cerr << "Reading Client[" << Clnt.getHstName() << "] Message : " << (val ? strerror(errno) : "Connection Closed.") << endl;
+	cout << BLU << "[ INFO ]\t" << WHT << "Connection Closed with client:" << YLW 
+				<< Clnt.getHstName() << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS << endl;
     vector<string> vc;
     vc.push_back("QUIT");
     Clnt.QuitServer(vc);
@@ -254,6 +268,8 @@ void    Server::RemoveClient(int fd) {
             this->Channels[this->Clients[fd].getChnls()[i]]->removeOperator(&this->Clients[fd]);
             this->Channels[this->Clients[fd].getChnls()[i]]->removeMember(&this->Clients[fd]);
             if (this->Channels[this->Clients[fd].getChnls()[i]]->getMembers().empty()) {
+				cout << BLU << "[ INFO ]\t" << WHT << this->Channels[this->Clients[fd].getChnls()[i]]->getName() << YLW 
+				<< " Channel Got destroyed" << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS << endl;
                 delete this->Channels[this->Clients[fd].getChnls()[i]];
                 this->Channels.erase(this->Clients[fd].getChnls()[i]);
             }
@@ -294,4 +310,16 @@ bool                Server::isClient(int ClntFd)
 bool                Server::isChannel(string &chnl)
 {
     return this->Channels.find(chnl) != this->Channels.end();
+}
+//##################################//
+//				LOGS				//
+//#################################//
+void	errorLog(string msg) {
+	cerr << RED <<"[ ERROR ]\t" << YLW << msg << C_CLS << endl;
+}
+
+void		CmdLogs(string cmd, string executer)
+{
+	if (!cmd.empty())
+		cout << GRN << "[ CMD  ]\t" << YLW  << cmd << " Command Executed by " << executer << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS << endl;
 }
