@@ -44,7 +44,7 @@ void Server::SetSockFd(string &port) {
     hnt.ai_family = AF_INET;
     hnt.ai_protocol = IPPROTO_TCP;
     hnt.ai_socktype = SOCK_STREAM;
-    int status = getaddrinfo(NULL, port.c_str(), &hnt, &ptr), enable = 1;
+    int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), enable = 1;
     if (status) {
 		errorLog("Getting Address Info : " + string(gai_strerror(status)));
         exit(1);
