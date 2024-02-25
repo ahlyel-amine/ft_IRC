@@ -18,7 +18,7 @@ int main(int ac, char **av) {
         }
         cout << srv->Welcome() << endl;
         cout << BLU << "\t\t[Server Started]\n" << endl
-            << "\tPort[" << C_CLS << prt << BLU << "]\t|\tIP["
+            << "\tPort[" << C_CLS << prt << BLU << "]\t|\tHOST["
             << C_CLS << hstname << BLU << "]" << C_CLS << endl;
         while (!interpted)
         {
