@@ -1,5 +1,5 @@
 #include "Server.hpp"
-
+#include <netdb.h>
 
 Server *Server::Instance = NULL;
 
@@ -40,17 +40,11 @@ Server::~Server() {
 */
 void Server::SetSockFd(string &port) {
     struct addrinfo *ptr, *tmp, hnt;
-    char    str[256];
-    if (gethostname(str, sizeof(str)) < 0) {
-		errorLog("Getting Host Name : " + string(strerror(errno)));
-        exit(1);
-    }
     memset(&hnt, 0, sizeof(hnt));
     hnt.ai_family = AF_INET;
     hnt.ai_protocol = IPPROTO_TCP;
     hnt.ai_socktype = SOCK_STREAM;
-    // int status = getaddrinfo("0.0.0.0", port.c_str(), &hnt, &ptr), opt_val = 1;
-    int status = getaddrinfo(str, port.c_str(), &hnt, &ptr), enable = 1;
+    int status = getaddrinfo(NULL, port.c_str(), &hnt, &ptr), enable = 1;
     if (status) {
 		errorLog("Getting Address Info : " + string(gai_strerror(status)));
         exit(1);
@@ -77,7 +71,7 @@ void Server::SetSockFd(string &port) {
         close(this->SockFd);
         throw std::runtime_error("Error: Could not Bind the socket");
     }
-	this->isConnected = true;
+    this->isConnected = true;
 }
 
 /*
@@ -104,6 +98,7 @@ void	Server::SocketListen( void )
 	}
 	return ;
 }
+
 Server *Server::InstanceServer(string &port, string &psw) {
     if (!Instance) {
         Instance = new Server();
@@ -214,13 +209,14 @@ bool	BufferFeed(Client &Clnt, string &buffer)
 		if (tmp.size() && tmp[tmp.size() - 1] == '\r')
 			tmp.erase(tmp.size() - 1);
 		Clnt.setMsgDzeb(tmp);
-		if (!Clnt.getMsg().empty())
+		if (!Clnt.getMsg().empty()) {
             parsed = Clnt.ParsAndExec();
-        if (Clnt.getCmd() == "QUIT") {
-            Server::getInstance()->RemoveClient(Clnt.getClntFd());
-            return false;
+		    CmdLogs(Clnt.getCmd(), Clnt.getHstName());
+            if (!Clnt.getCmd().empty() && Clnt.getCmd() == "QUIT") {
+                Server::getInstance()->RemoveClient(Clnt.getClntFd());
+                return false;
+            }
         }
-		CmdLogs(Clnt.getCmd(), Clnt.getHstName());
 		tmp.clear();
 	}
     buffer = "";

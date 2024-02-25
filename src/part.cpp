@@ -62,7 +62,7 @@ bool Client::partCommand(vector<string> cmd)
     {
         if (!srv->isChannel(channels.front()))
         {
-            ErrorMsgGenrator(":IRCserv.1337.ma 403 ", channels.front() + " :No such channel", *this);
+            ErrorMsgGenrator(":IRCserv.1337.ma 403 ", " " + channels.front() + " :No such channel", *this);
             channels.pop();
             continue;
         }
