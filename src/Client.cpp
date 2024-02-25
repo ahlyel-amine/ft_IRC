@@ -115,10 +115,24 @@ void    Client::setCmd(string line) {
 }
 
 void Client::Welcome() {
-    ErrorMsgGenrator(":IRCserv.1337.ma 001 ", " Welcome to the KAMIKAZI Network, " + this->NckName, *this);
-    ErrorMsgGenrator(":IRCserv.1337.ma 002 ", " Your host is IRCserv.1337.ma, running version 0.1.0", *this);
-    ErrorMsgGenrator(":IRCserv.1337.ma 003 ", " This server was created " + localTime(time(0)), *this);
-    ErrorMsgGenrator(":IRCserv.1337.ma 004 ", " IRCserv.1337.ma 0.1.0", *this);
+	stringstream	wMsg;
+	const string&	nickName = this->getNckName();
+	wMsg << ":" << SERVER_NAME << " 001 " << nickName
+	<< " : Welcome to the Internet Relay Network" << "\r\n";
+	wMsg <<":" << SERVER_NAME << " 002 " << nickName
+	<< " : Your host is " << SERVER_NAME << ", running version " << VERSION << "\r\n";
+	wMsg << ":" << SERVER_NAME << " 003 " << nickName
+	<< " :This " << SERVER_NAME << " server was created " << Server::getInstance()->getLocalTime() << "\r\n";
+	wMsg << ":" << "server 004 " << nickName
+	<< " " << SERVER_NAME << " Version relaisse "<< VERSION << " <available umodes>"
+	<< " <available cmodes>" << "\r\n";
+	if (send(this->ClntFd, wMsg.str().c_str(), wMsg.str().size(), 0) <= 0)
+		cerr << "Error: " << strerror(errno) << endl;
+	// send(this->ClntFd, wMsg.str().c_str(), wMsg.str().size(), 0);
+    // ErrorMsgGenrator(":IRCserv.1337.ma 001 ", " Welcome to the KAMIKAZI Network, " + this->NckName, *this);
+    // ErrorMsgGenrator(":IRCserv.1337.ma 002 ", " Your host is IRCserv.1337.ma, running version 0.1.0", *this);
+    // ErrorMsgGenrator(":IRCserv.1337.ma 003 ", " This server was created " + localTime(time(0)), *this);
+    // ErrorMsgGenrator(":IRCserv.1337.ma 004 ", " IRCserv.1337.ma 0.1.0", *this);
 }
 
 /**
