@@ -92,3 +92,42 @@ int16_t		connectToServer(Bot& bot)
 	return sockFd;
 	// std::cout << ":<servername> "<< this->getName() << " has joined the server" << std::endl;
 }
+
+
+
+
+
+Bot* createBot(std::string host, std::string port, std::string pass, BotType type)
+{
+	botCreator creators = {&createInfBot, &createPrvMsgBot};
+	int8_t funcPosition = (type == GETPRICE) * 1 + (type == ANNOMSG) * 2;
+	return creators[funcPosition - 1](host, port, pass, type);
+}
+
+Bot* bot_init(char **argv)
+{
+	int16_t sockFd;
+	Bot *bot;
+	BotType bType = static_cast<BotType>(std::stoi(*(argv + 4)));
+	if (bType != GETPRICE && bType != ANNOMSG)
+	{
+		std::cerr << "Invalid bot type" << std::endl;
+		exit(1);
+	}
+	bot = createBot(*(argv + 1), *(argv + 2), *(argv + 3), bType);
+	sockFd = connectToServer(*bot);
+	if (sockFd == -1)
+	{
+		std::cerr << "Connection failed" << std::endl;
+		exit(1);
+	}
+	// bot Authorize
+	if (!bot->autoRegister())
+	{
+		std::cerr << "Server connection Authorization failed" << std::endl;
+		delete bot;
+		close(sockFd);
+		bot = NULL;
+	}
+	return (bot);
+}

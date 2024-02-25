@@ -1,18 +1,14 @@
 #pragma once
 #ifndef BOT_HPP
 # define BOT_HPP
-#include <algorithm>
+
 #include <string>
 #include <iostream>
-#include <map>
-#include <vector>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <netdb.h>
-#include <poll.h>
 #include <unistd.h>
-#include <climits>
 #include <csignal>
 #include <cstring>
 #include <cerrno>
@@ -21,6 +17,7 @@
 #include <curl/curl.h>
 # define BTCAPI "https://api.coindesk.com/v1/bpi/currentprice.json"
 # define _OPTIMAL 5
+
 typedef enum
 {
 	TALKTOME,
@@ -57,4 +54,10 @@ class Bot
 };
 
 int16_t		connectToServer(Bot& bot);
+Bot *createInfBot(std::string, std::string, std::string, BotType);
+Bot *createPrvMsgBot(std::string, std::string, std::string, BotType);
+Bot *createInfBot(std::string host, std::string port, std::string pass, BotType type);
+Bot	*createBot(std::string host, std::string port, std::string pass, BotType type);
+Bot* bot_init(char **argv);
+typedef Bot* (*botCreator[])(std::string host, std::string port, std::string pass,BotType type);
 #endif

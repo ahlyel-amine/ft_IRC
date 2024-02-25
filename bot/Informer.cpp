@@ -86,5 +86,9 @@ void			Informer::botReply(std::string msg)
 			std::cerr << "send: " << strerror(errno) << std::endl;}
 }
 
-
 Informer::~Informer() {}
+
+Bot *createInfBot(std::string host, std::string port, std::string pass, BotType type)
+{
+	return new Informer(host, port, pass, type);
+}

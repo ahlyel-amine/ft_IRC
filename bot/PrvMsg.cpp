@@ -33,3 +33,8 @@ void	PrvMsg::botReply(std::string msg)
 		else
 			std::cerr << "send: " << strerror(errno) << std::endl;
 }}
+
+Bot *createPrvMsgBot(std::string host, std::string port, std::string pass, BotType type)
+{
+	return new PrvMsg(host, port, pass, type);
+}
