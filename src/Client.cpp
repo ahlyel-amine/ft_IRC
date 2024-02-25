@@ -47,10 +47,6 @@ bool Client::infoChannel(vector<string> cmd)
 {
     try
     {    
-        for (size_t i = 0; i < cmd.size(); i++)
-        {
-            cout << cmd[i] << endl;
-        }
         if (cmd.size() != 2)
             return false;
         Channel *chnl = Server::getInstance()->getChannels()[cmd[1]];
@@ -167,6 +163,8 @@ bool    Client::ParsAndExec() {
     if (!this->SrvPss.empty() && !this->NckName.empty() && !this->UsrName.empty()) {
         if (!this->Regestred)
             this->Welcome();
+		cout << BLU << "[ INFO ]\t" << WHT << this->getHstName() << " Authenticat Successfuly to "
+		<< YLW << SERVER_NAME << C_CLS << " " << WHT << localTime(time(0)) << endl; 
         this->Regestred = true;
     }
     this->Msg = "";

@@ -75,7 +75,6 @@ void	Client::sendClientMsg(string& target, vector<string>& cmd)
 
 bool		  Client::SendPrvMsg(vector<string> cmd) {
     bool           rt = true;
-    
     if (cmd.size() == 3) {
         vector<string> targets = getTargets(cmd[1], ',');
         for (size_t i = 0; i < targets.size(); i++){

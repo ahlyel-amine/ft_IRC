@@ -16,14 +16,16 @@ int main(int ac, char **av) {
         }
         Server *srv = Server::InstanceServer(prt, pwd);
 		cout << '\n' << srv->Welcome() << endl;
-        cout << "\t\t[Server Started]" << endl << "Port: " << prt << endl;
+        cout << WHT <<"\t\t\t[Server Started]" << '\n' << C_CLS << endl;
+		cout << BLU << "[ INFO ]\t" << WHT << SERVER_NAME 
+		<< YLW << ":" << prt << C_CLS << " " << WHT << srv->getLocalTime() << endl; 
         while (!interpted)
         {
 			try {
 				srv->launchServer();
 			}
             catch(std::exception& e) {
-				cerr << e.what() << endl;
+				errorLog(e.what());
 				break;
 			}
 		}
@@ -31,7 +33,7 @@ int main(int ac, char **av) {
         system("leaks ircserv");
     }
     else {
-        cerr << "Invalide Arguments : Usage : ./ircserv <port> <password>" << endl;
+		errorLog("Invalide Arguments : Usage : ./ircserv <port> <password>");
         return 1;
     }
 }

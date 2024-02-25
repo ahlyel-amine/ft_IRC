@@ -64,7 +64,8 @@ static void    initiateChannel(map<string, Channel*> &Channels, queue<string>& c
         Channel *chnl = new Channel(client, channels.front());
 
         Channels[channels.front()] = chnl;
-        cout << "channel created" << Channels[channels.front()]->getName() << " : " << channels.front() << endl;
+		cout << BLU << "[ INFO ]\t" << WHT << "Now Channel Created with name: " 
+		<< channels.front() << C_CLS <<" " << WHT << localTime(time(0)) << C_CLS << endl;
         client->setChannel(channels.front());
         SendMsg(*client, *client, join[0], "", channels.front());
         ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :@"+client->getNckName(), *client);

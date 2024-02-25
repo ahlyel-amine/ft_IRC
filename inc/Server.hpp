@@ -32,6 +32,7 @@ class Client;
 #define max_connection 128
 
 # define BLU "\033[34;1m"
+# define WHT "\033[1m"
 # define CYN "\033[36;1m"
 # define PRP "\033[35;1m"
 # define GRN "\033[32;1m"
@@ -114,3 +115,5 @@ void VcRemove(vector<T> &vc, T trg) {
 }
 
 string localTime(time_t);
+void	errorLog(string msg);
+void		CmdLogs(string cmd, string executer);
