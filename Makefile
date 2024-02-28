@@ -30,7 +30,8 @@ NAME = ircserv
 all : $(NAME)
 
 $(NAME) : $(OBJ)
-	c++ $(FLGS) $^ -o $@
+	mkdir -p bin
+	c++ $(FLGS) $^ -o bin/$@
 
 $(OBJ_DIR)/%.o : %.cpp
 	mkdir -p $(dir $@)
@@ -52,7 +53,7 @@ clean_bot :
 	make -C bot clean
 
 fclean : clean
-	rm -rf $(NAME)
+	rm -rf bin
 	printf "[ $(RED)%-30s$(C_CLS) ]\n" "Executable & Archives got removed successfuly ❌"
 
 re  : clean fclean all
