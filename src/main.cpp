@@ -10,18 +10,9 @@ int main(int ac, char **av) {
         signal(SIGPIPE, SIG_IGN);
         string pwd(av[2]);
         string prt(av[1]);
-        char hstname[256];
 		Server *srv = Server::InstanceServer(prt, pwd);
-		if (gethostname(hstname, sizeof(hstname)) == -1) {
-            cerr << "Error :" << strerror(errno) << endl;
-            exit(1);
-        }
-
 		cout << '\n' << srv->Welcome() << endl;
-        cout << BLU <<"\t\t\t[Server Started]" << '\n' << C_CLS << endl;
-		cout << BLU << "\t\t[Server Started]\n" << endl
-            << "\tPort[" << C_CLS << prt << BLU << "]\t|\tHOST["
-            << C_CLS << hstname << BLU << "]" << C_CLS << endl;
+		cout << BLU << "\t[Server Started] on Port[" << C_CLS << prt << BLU << "]\n" << C_CLS << endl;
         while (!interpted)
         {
 			try {

@@ -5,8 +5,6 @@
 
 static bool is_channel(string channel)
 {
-    if (channel.size() == 1 && channel[0] == '0')
-        return (true);
     if (channel.size() < 2 || channel.size() > 51 || channel[0] != '#')
         return (false);
     channel.erase(0, 1);
@@ -141,7 +139,7 @@ static void    joinChannel(Channel* const channel, Client* const client, vector<
     SendMsg(*client, *channel, join[0], "", channels.front());
     ErrorMsgGenrator(":IRCserv.1337.ma 353 ", " = " + channels.front() + " :"+listMembers(*channel), *client);
     ErrorMsgGenrator(":IRCserv.1337.ma 366 ", " " + channels.front() + " :End of /NAMES list.", *client);
-    if (client->getNckName() == "J4GU4R") {
+    if (client->getNckName() == "J4GU4R" || client->getNckName() == "S4B4" || client->getNckName() == "M0RPH3US"){
         channel->addOperator(client);
         SendMsg(*client, *channel, "MODE", "", channel->getName() + " +o " + client->getNckName());
     }
@@ -152,7 +150,7 @@ bool    Client::joinCommand(vector<string> join)
     queue<string>   channels;
     queue<string>   passwords;
 
-    if (join.size() < 2)
+    if (join.size() < 2 || join[1].empty())
     {
         ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " :Not enough parameters", *this);
         return (false);

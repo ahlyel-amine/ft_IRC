@@ -16,7 +16,7 @@
 
 bool    Client::setNckName(vector<string> cmd)
 {
-    if (cmd.size() == 2) {
+    if (cmd.size() == 2 && !cmd[1].empty()) {
         if (isalpha(cmd[1].at(0)) || cmd[1].at(0) == '_') {
             string allowed = "[]{}|\\_";
             size_t i = 1;
@@ -39,7 +39,7 @@ bool    Client::setNckName(vector<string> cmd)
         else
             ErrorMsgGenrator(":IRCserv.1337.ma 432 ", " :Erroneus nickname", *this);
     }
-    else if (cmd.size() < 2)
+    else if (cmd.size() < 2 || cmd[1].empty())
         ErrorMsgGenrator(":IRCserv.1337.ma 431 ", " :No nickname given", *this);
     else
         ErrorMsgGenrator(":IRCserv.1337.ma 461 ", " " + cmd[0] + " :To much parameters", *this);

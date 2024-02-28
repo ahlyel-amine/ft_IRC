@@ -25,7 +25,7 @@ void	PrvMsg::botReply(std::string msg)
 		return;
 	nick = extractNick(msg);
 	if (Msg.at(0) == ':')
-		Msg.erase(std::remove(Msg.begin(), Msg.end(), ':'), Msg.end());
+		Msg.erase(0, Msg.find_first_not_of(':'));
 	std::string finalMsg = static_cast<std::string>("PRIVMSG") + " " + reciever + " :" + Msg + "\r\n";
 	if ((sendBytes = send(this->getSocketFd(), finalMsg.c_str(), finalMsg.size(), 0)) <= 0)
 	{	if (sendBytes == 0)
