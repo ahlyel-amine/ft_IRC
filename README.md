@@ -66,10 +66,10 @@ which the last parameter determines which type of bot you want to use.
 | **ANONYMSG** | `anonymsg <target> <message>` | This is on of the bots the command it sends the targeted user an anonymus message. |
 | **BTCPRICE** | `btcprice` | This command is also a bot command it is used to know the live price of the **BitCoin** |
 
-> **N.B:** To know more about the commands and there usage you can go [here](modern.ircdocs.horse/).
+> **N.B:** To know more about the commands and there usage you can go [here](https://modern.ircdocs.horse/).
 
 # **Authers & Final mark:**
 
-This project was done bye [**jaguar-ks**](https:https://github.com/jaguar-ks), [**AhlyelAmine**](https://github.com/AhlyelAmine) and [**bleuuone**](https://github.com/bleuuone).
+This project was done bye [**jaguar-ks**](https://github.com/jaguar-ks), [**AhlyelAmine**](https://github.com/AhlyelAmine) and [**bleuuone**](https://github.com/bleuuone).
 
 ![final_mark](./final_mark.png)
