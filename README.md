@@ -40,10 +40,13 @@ To run the bot you can run the `make bot` and than wait for the executable to be
 ```
 
 which the last parameter determines which type of bot you want to use.
+1- is Informer(Emet) bot type which by useing it you can get BTC price by calling BTCPRICE (btcprice),
+ or by using DATE (date) as a command you get the date of the day.
+2- is ANONYMSG as the name suggest it help a user to send a completly annonymous msg to another user.
 
 > N.B : If you are using another OS rather than macOS you may need to Download the `curl` library:
 > ```bash
->   sudo apt-get install curl
+>   sudo apt-get install libcurl4-openssl-dev
 >```
 
 ---
@@ -65,7 +68,7 @@ which the last parameter determines which type of bot you want to use.
 | **PRIVMSG** | `privmsg <targets>{,<targets>} <message>` | The PRIVMSG command is used to send private messages between users, as well as to send messages to channels. |
 | **ANONYMSG** | `anonymsg <target> <message>` | This is on of the bots the command it sends the targeted user an anonymus message. |
 | **BTCPRICE** | `btcprice` | This command is also a bot command it is used to know the live price of the **BitCoin** |
-
+| **DATE** | `date` | This command is also a bot command it is used to know the date of the **day** |
 > **N.B:** To know more about the commands and there usage you can go [here](https://modern.ircdocs.horse/).
 
 # **Authers & Final mark:**

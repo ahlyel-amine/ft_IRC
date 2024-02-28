@@ -22,7 +22,7 @@ int main(int ac, char **av)
 	if (ac != 5)
 	{
 		std::cerr << "Usage: " << av[0] << " <hostname> <port> <pass> <bottype>" << std::endl;
-		std::cerr << "\t\tbottype: 1 - btcprice, 2 - privmsg" << std::endl;
+		std::cerr << "\t\tbottype: 1 - Emet, 2 - privmsg" << std::endl;
 		exit(1);
 	}
 	bot = bot_init(av);
