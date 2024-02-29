@@ -70,17 +70,17 @@ ones offer much greater control over your data transmission.
 
 	```
 
-	|	Parameter	 |  	 Description         					|
-	| :-------------:| :----------------------- 					|
-	|	socket       | The socket descriptor.    					|
-	|				 |												|
-	|  level         | The level for which the option is being set.	|
-	|				 |	     										|
-	|	option_name	 | The name of a specified socket option. 		|
-	|				 | 				            					|
-	|	option_value | The pointer to option data. 					|
-	|				 |                      						|
-	|	option_length| The length of the option data.				|
+   	|    Parameter	 |  	 Description         				|
+	| :-------------:| :--------------------------------------------- 	|
+   	|  socket 	 | The socket descriptor.    				|
+	|		 |							|
+	|  level         | The level for which the option is being set.		|
+	|		 |	     						|
+   	|  option_name	 | The name of a specified socket option. 		|
+	|		 | 				       			|
+   	|  option_value  | The pointer to option data. 				|
+	|		 |                    					|
+   	|  option_length | The length of the option data.			|
 
 4. **Listen()** :
 	* *Before you can accept incoming connections on a socket, you need to inform the operating system that the socket will be used for listening. This is where the listen() function comes in.*
@@ -94,14 +94,13 @@ ones offer much greater control over your data transmission.
 	int accept(int socket, struct sockaddr *addr, socklen_t *addrlen);
 ```
 
-	|	Parameter	 |  	 Description         								|
-	| :-------------:| :----------------------- 								|
-	|	socket       | The listen()ing socket descriptor    					|
-	|				 |															|
-	| 	 addr	     | The struct the holds infos about incomming connection	|
-	|				 |	     													|
-	|	addrlen		 | The lenght of sockaddr struct		 					|
-	|				 | 				            								|
+	|    Parameter	 |  	 Description         				 |
+	| :-------------:| :---------------------------------------		 |
+	|	socket   | The listen()ing socket descriptor    		 |
+	|		 |							 |
+	| 	 addr    | The struct the holds infos about incomming connection.|
+	|		 |	      						 |
+	|	addrlen	 | The lenght of sockaddr struct.			 |
 
 	
 5. **send()/recv()**
@@ -114,14 +113,13 @@ ones offer much greater control over your data transmission.
 #include <poll.h>
 int poll(struct pollfd fds[], nfds_t nfds, int timeout);
 ```
-	|	Parameter	 |  	 Description         									|
-	| :-------------:| :----------------------- 									|
-	|		fds	     | The array of information (which sockets to monitor for what) |
-	|				 |																|
-	| 	 addr	     | The count of elements in the array							|
-	|				 |	     														|
-	|	timeout		 | The timeout in milliseconds			 						|
-	|				 | 				            									|
+	|     Parameter	 |  	 Description         					|
+	| :-------------:| :----------------------------------------------------------  |
+	|fds		 | The array of information (which sockets to monitor for what) |
+	|		 |								|
+	|addr	         | The count of elements in the array				|
+	|		 |	     							|
+	|timeout	 | The timeout in milliseconds		 			|
 
 ---
 
