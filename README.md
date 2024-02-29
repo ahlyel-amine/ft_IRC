@@ -73,6 +73,6 @@ which the last parameter determines which type of bot you want to use.
 
 # **Authers & Final mark:**
 
-This project was done bye [**jaguar-ks**](https://github.com/jaguar-ks), [**AhlyelAmine**](https://github.com/AhlyelAmine) and [**bleuuone**](https://github.com/bleuuone).
+This project was done by [**jaguar-ks**](https://github.com/jaguar-ks), [**AhlyelAmine**](https://github.com/AhlyelAmine) and [**bleuuone**](https://github.com/bleuuone).
 
 ![final_mark](./final_mark.png)
