@@ -1,7 +1,6 @@
 FROM debian:latest
 RUN apt-get update
 RUN apt-get -y install python3 python3-pip make g++
-RUN apt-get update
 
 WORKDIR /app
 COPY src /app/src/
