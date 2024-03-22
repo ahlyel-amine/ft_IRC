@@ -12,7 +12,7 @@ C_CLS = \033[0m
 #         GLOBAL_VARIABLE        #
 #================================#
 SRC = $(shell ls src/ | awk '{print "src/"$$1}')
-
+CONTAINER = irs_server
 OBJ_DIR = obj
 
 OBJ = $(patsubst %.cpp, $(OBJ_DIR)/%.o,  $(SRC))
@@ -58,6 +58,11 @@ fclean : clean
 
 re  : clean fclean all
 
+build :
+	docker build -t $(CONTAINER) .
+
+start :
+	docker run --privileged -it --rm -p 127.0.0.1:6666:6666 $(CONTAINER)
 .PHONY : all clean fclean re
 -include : $(DEPS)
 .SILENT : $(NAME) $(OBJ) clean fclean re all bot fclean_bot clean_bot
