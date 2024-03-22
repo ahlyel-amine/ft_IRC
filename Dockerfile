@@ -14,4 +14,4 @@ COPY Makefile /app
 RUN make
 EXPOSE 6666
 
-# ENTRYPOINT ["./bin/ircserv", "6666", "password"]
+ENTRYPOINT ["./bin/ircserv", "6666", "password"]
