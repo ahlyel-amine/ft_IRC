@@ -7,11 +7,11 @@ WORKDIR /app
 COPY src /app/src/
 COPY test.py /app/
 COPY Dockerfile /app/
-COPY docker_ins.sh /app/
+
 COPY inc /app/inc/
 COPY Makefile /app
 
 RUN make
 EXPOSE 6666
 
-ENTRYPOINT ["./bin/ircserv", "6666", "password"]
+# ENTRYPOINT ["./bin/ircserv", "6666", "password"]
