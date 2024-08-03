@@ -1,0 +1,28 @@
+services:
+  irc_server:
+    ports:
+      - "6666:6666"
+    container_name: irc_server
+    build: ./
+    networks:
+      - irc
+
+  anonymous_bot:
+    container_name: anonymous_bot
+    build: ./bot/
+    command: ["./bin/ircbot", "irc_server", "6666", "password", "2"]
+    depends_on:
+      - irc_server
+    networks:
+      - irc
+
+  btc_price_bot:
+    container_name: btc_price_bot
+    build: ./bot/
+    command: ["./bin/ircbot", "127.0.0.1", "6666", "password", "1"]
+    network_mode: host
+    depends_on:
+      - irc_server
+
+networks :
+  irc:

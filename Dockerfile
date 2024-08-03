@@ -4,7 +4,7 @@ RUN apt-get -y install python3 python3-pip make g++
 
 WORKDIR /app
 COPY src /app/src/
-COPY test.py /app/
+COPY ./tests/test.py /app/
 COPY Dockerfile /app/
 
 COPY inc /app/inc/

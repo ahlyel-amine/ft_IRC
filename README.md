@@ -89,11 +89,11 @@ ones offer much greater control over your data transmission.
 5. **accept()** :
 	*  Is a fundamental function in socket programming that allows a server to accept incoming connections from clients, creating a new socket for each accepted connection and enabling bidirectional communication between the server and client
 
-```C
-	#include <sys/types.h>
-	#include <sys/socket.h>
-	int accept(int socket, struct sockaddr *addr, socklen_t *addrlen);
-```
+	```C
+		#include <sys/types.h>
+		#include <sys/socket.h>
+		int accept(int socket, struct sockaddr *addr, socklen_t *addrlen);
+	```
 
 	|    Parameter	 |  	 Description         				 |
 	| :-------------:| :---------------------------------------		 |
@@ -110,10 +110,10 @@ ones offer much greater control over your data transmission.
 6. **poll()—Synchronous I/O Multiplexing**
 	* *to monitor multiple file descriptors (such as sockets, pipes, or files) for events without blocking the execution of the program.*
 
-```C
-#include <poll.h>
-int poll(struct pollfd fds[], nfds_t nfds, int timeout);
-```
+	```C
+	#include <poll.h>
+	int poll(struct pollfd fds[], nfds_t nfds, int timeout);
+	```
 	|     Parameter	 |  	 Description         					|
 	| :-------------:| :----------------------------------------------------------  |
 	|fds		 | The array of information (which sockets to monitor for what) |
@@ -158,7 +158,29 @@ which the last parameter determines which type of bot you want to use.
 >```
 
 ---
+## **Running with Docker Compose:**
 
+1. **Build and Start the Server and Bot:**
+
+   Ensure you have Docker and Docker Compose installed. Navigate to the root directory of your project, then run:
+
+   	```bash
+   docker-compose up --build -d
+	```
+2. **Show logs**
+
+	```c
+	make C=container_name logs 
+	```
+
+	|     container_name	 |  	 Description         					|
+	| :-------------:| :----------------------------------------------------------  |
+	| irc_server  | Attach terminal to irc_server logs|
+	|anonymous_bot| Attach terminal to anonymous_bot logs|
+	|btc_price_bot| Attach terminal to btc_price_bot logs|
+
+> N.B : if C didnt specified the default is irc_server
+---
 # **Available commands:**
 
 | Commands | Usage | Discription |
@@ -181,6 +203,6 @@ which the last parameter determines which type of bot you want to use.
 
 # **Authers & Final mark:**
 
-This project was done by [**jaguar-ks**](https://github.com/jaguar-ks), [**AhlyelAmine**](https://github.com/AhlyelAmine) and [**bleuuone**](https://github.com/bleuuone).
+This project was done by [**jaguar-ks**](https://github.com/jaguar-ks), [**ahlyel-amine**](https://github.com/ahlyel-amine) and [**bleuuone**](https://github.com/bleuuone).
 
 ![final_mark](./final_mark.png)

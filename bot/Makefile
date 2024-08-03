@@ -6,7 +6,7 @@
 #    By: aahlyel <aahlyel@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/02/03 15:57:19 by aelbrahm          #+#    #+#              #
-#    Updated: 2024/02/25 08:55:34 by aahlyel          ###   ########.fr        #
+#    Updated: 2024/08/03 01:12:24 by aahlyel          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,7 +42,7 @@ $(NAME) : $(OBJS)
 		mkdir -p bin
 		$(CC) $(FLAGS)  $(OBJS) -o $(NAME) -lcurl
 
-obj/%.o : %.cpp $(HEADRES)
+obj/%.o : ../bot/%.cpp $(HEADRES)
 		mkdir -p $(dir $@)
 		printf "|[ $(GRN)%-37s$(C_CLS)$(YLW) ]| \r" "Compailing... $(notdir $@)"
 		$(CC) $(FLAGS) -c  $< -o $@
@@ -55,6 +55,14 @@ clean :
 fclean : clean
 		$(RM) bin obj
 		printf "[ $(RED)%-30s$(C_CLS) ]\n" "Executable & Archives got removed successfuly ❌"
+
+help:
+	@echo "Available targets:"
+	@echo "  all        - Build the project (default target)"
+	@echo "  clean      - Remove object files and the $(OBJ_DIR) directory"
+	@echo "  fclean     - Remove the executable and object files"
+	@echo "  re         - Clean and rebuild the project"
+	@echo "  help       - Display this message"
 
 re : fclean all
 .SILENT : $(DIR) $(NAME) clean fclean $(OBJS)
