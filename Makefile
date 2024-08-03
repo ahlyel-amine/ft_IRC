@@ -44,13 +44,13 @@ clean :
 	sleep 1
 
 bot :
-	make -C bot
+	make -C bot/
 
 fclean_bot :
-	make -C bot fclean
+	make -C bot/ fclean
 
 clean_bot :
-	make -C bot clean
+	make -C bot/ clean
 
 fclean : clean
 	rm -rf bin
@@ -59,10 +59,26 @@ fclean : clean
 re  : clean fclean all
 
 build :
-	docker build -t $(CONTAINER) .
+	docker-compose up --build -d
 
-start :
-	docker run --privileged -it --rm -p 127.0.0.1:6666:6666 $(CONTAINER)
-.PHONY : all clean fclean re
+C ?= irc_server
+logs :
+	docker-compose logs ${C} -f
+
+help:
+	@echo "Available targets:"
+	@echo "  all                - Build the project (default target)"
+	@echo "  clean              - Remove object files and the $(OBJ_DIR) directory"
+	@echo "  fclean             - Remove the executable and object files"
+	@echo "  re                 - Clean and rebuild the project"
+	@echo "  build              - Build Docker containers using docker-compose"
+	@echo "  bot                - Build the bot project"
+	@echo "  clean_bot          - Clean the bot project"
+	@echo "  fclean_bot         - Remove bot project artifacts"
+	@echo "  logs               - Attach terminal to server logs of the $(C) container"
+	@echo "  help               - Display this help message"
+	@echo "  C=<container> logs - Attach terminal to server logs of the specified container"
+
+.PHONY : all clean fclean re bot fclean_bot clean_bot build -h
 -include : $(DEPS)
-.SILENT : $(NAME) $(OBJ) clean fclean re all bot fclean_bot clean_bot
+.SILENT : $(NAME) $(OBJ) clean fclean re all bot fclean_bot clean_bot 

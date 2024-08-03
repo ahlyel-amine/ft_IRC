@@ -1,14 +1,14 @@
 import asyncio
 import signal
 
-MAX_SOCKETS = 900
+MAX_SOCKETS = 1000
 DELAY = 1
 
 async def connect_socket(i):
     try:
-        reader, writer = await asyncio.open_connection("127.0.0.1", 8080)
+        reader, writer = await asyncio.open_connection("127.0.0.1", 6666)
         print("Connected!")
-        writer.write("PASS lol\r\n".encode())
+        writer.write("PASS password\r\n".encode())
         await asyncio.sleep(DELAY)
         writer.write(f"NICK users{i}\r\n".encode())
         await asyncio.sleep(DELAY)
@@ -17,15 +17,16 @@ async def connect_socket(i):
         writer.write("JOIN #general\r\n".encode())
         await asyncio.sleep(DELAY)
         await writer.drain()
-        while True:
-            # data = await reader.read(1024)
-            # if not data:
-            #     break
-            # response = data.decode()
-            # print(f"Received: {response}")
+        j = 0
+        while j in range(0, MAX_SOCKETS):
+            data = await reader.read(1024)
+            if not data:
+                break
+            response = data.decode()
+            print(f"Received: {response}")
 
             await asyncio.sleep(DELAY)
-            writer.write(f"PRIVMSG #general :A7san Server Fl3alam{i}\r\n".encode())
+            writer.write(f"PRIVMSG #general :The Best Server in the whole world ;) {i}\r\n".encode())
             await writer.drain()
 
     except asyncio.CancelledError:
